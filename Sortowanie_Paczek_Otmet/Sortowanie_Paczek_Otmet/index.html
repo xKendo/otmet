@@ -153,9 +153,9 @@
       <button type="button" class="nav-option active" data-view="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.8" cy="10.8" r="7"/><path d="m16 16 5 5"/></svg><span>Mam ulicę – gdzie ją dać?</span></button>
       <button type="button" class="nav-option" data-view="zones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="6.5" width="19" height="12" rx="2"/><path d="M12 6.5v12M2.5 12.5h19"/></svg><span>Strefy paczek – wykaz ulic</span></button>
       <button type="button" class="nav-option" data-view="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 17 1 3 3-1L19 8a2 2 0 0 0-3-3L5 16l-1 1Zm10-10 3 3"/></svg><span>Edycja bazy danych</span></button>
-      <div class="nav-version" aria-label="Informacja o aktualizacji, wersja 1.1">
+      <div class="nav-version" aria-label="Informacja o aktualizacji, wersja 1.2">
         <span class="version-icon" aria-hidden="true">ⓘ</span>
-        <span><strong>Aktualizacja 1.1</strong><small>Przycisk cofnij · widoczny wynik na telefonie</small></span>
+        <span><strong>Aktualizacja 1.2</strong><small>Systemowe Wstecz czyści wyszukiwanie na Androidzie</small></span>
       </div>
     </nav>
   </header>
@@ -217,7 +217,7 @@
       </details>
     </div>
   </section>
-  <footer class="app-footer">Wyszukiwanie działa bez internetu · Dane zapisane lokalnie na urządzeniu<br>Otmęt · Wersja 1.1</footer>
+  <footer class="app-footer">Wyszukiwanie działa bez internetu · Dane zapisane lokalnie na urządzeniu<br>Otmęt · Wersja 1.2</footer>
 </div>
 <div id="navBackdrop" class="backdrop" hidden></div>
 <div id="toast" role="status" class="toast" hidden></div>
@@ -259,6 +259,51 @@ const DEFAULT_DATABASE = {"version":1,"zones":["LEWY TYŁ","PRAWY TYŁ","LEWY Ś
   function view(name){app.view=name;setMenu(false);document.body.classList.remove('search-typing');$('backHomeButton').hidden=name==='search';for(const n of ['search','zones','edit']){ $(n+'View').hidden=n!==name;}
     document.querySelectorAll('.nav-option').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
     if(name==='zones')renderZones();if(name==='edit')renderEditor();window.scrollTo({top:0,behavior:'instant'});
+  }
+  // Android: systemowe Wstecz jest obsługiwane przez dodatkowy wpis historii.
+  // Gdy klawiatura jest otwarta, pierwsze Wstecz ją chowa; następne czyści ulicę.
+  // Gdy wyszukiwanie jest puste, kolejny Back może normalnie zamknąć aplikację.
+  const androidSystemBack = /Android/i.test(navigator.userAgent);
+  const backStateKey = '__otmetBackGuard';
+  let backGuardArmed = false;
+  function armAndroidBackGuard(){
+    if(!androidSystemBack || backGuardArmed) return;
+    try {
+      history.pushState({[backStateKey]:true},'',location.href);
+      backGuardArmed=true;
+    } catch(error) {
+      // Starsze przeglądarki plików content:// mogą blokować History API.
+    }
+  }
+  function keyboardVisibleOnAndroid(){
+    if(document.activeElement!==$('searchInput')) return false;
+    const viewport=window.visualViewport;
+    if(!viewport) return false;
+    return window.innerHeight - viewport.height > Math.max(130,window.innerHeight*0.18);
+  }
+  function handleAndroidSystemBack(){
+    if(!backGuardArmed || !androidSystemBack) return;
+    backGuardArmed=false;
+    // Jeżeli cofnięcie ukrywa klawiaturę, nie czyść tekstu przy pierwszym naciśnięciu.
+    if(keyboardVisibleOnAndroid()){
+      $('searchInput').blur();
+      armAndroidBackGuard();
+      return;
+    }
+    if(!$('navMenu').hidden){setMenu(false);armAndroidBackGuard();return;}
+    if(app.view!=='search'){view('search');armAndroidBackGuard();return;}
+    if($('searchInput').value.trim()){
+      $('searchInput').blur();
+      $('searchInput').value='';
+      app.acknowledged1Maja='';
+      renderSearch();
+      window.scrollTo(0,0);
+      armAndroidBackGuard();
+      toast('Wyszukiwanie wyczyszczone.');
+      return;
+    }
+    // Pole puste: nie uzbrajamy pułapki ponownie, by nie blokować wyjścia z aplikacji.
+    // Gdy użytkownik znów zacznie pisać, strażnik zostanie uzbrojony ponownie.
   }
   function dom(tag,className,text){const el=document.createElement(tag);if(className)el.className=className;if(text!==undefined)el.textContent=text;return el;}
   function blank(node){node.replaceChildren();}
@@ -456,7 +501,9 @@ const DEFAULT_DATABASE = {"version":1,"zones":["LEWY TYŁ","PRAWY TYŁ","LEWY Ś
     $('backHomeButton').addEventListener('click',()=>view('search'));
     $('menuButton').addEventListener('click',()=>setMenu($('navMenu').hidden));
     $('navBackdrop').addEventListener('click',()=>setMenu(false));
-    document.querySelectorAll('.nav-option').forEach(btn=>btn.addEventListener('click',()=>view(btn.dataset.view)));
+    document.querySelectorAll('.nav-option').forEach(btn=>btn.addEventListener('click',()=>{armAndroidBackGuard();view(btn.dataset.view);}));
+    window.addEventListener('popstate',handleAndroidSystemBack);
+    armAndroidBackGuard();
     document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false);});
     // Android/iOS: gdy klawiatura jest otwarta, wynik mieści się tuż pod polem.
     $('searchInput').addEventListener('focus',()=>{
@@ -473,7 +520,7 @@ const DEFAULT_DATABASE = {"version":1,"zones":["LEWY TYŁ","PRAWY TYŁ","LEWY Ś
         if(field.top>55)window.scrollTo({top:Math.max(0,window.scrollY+field.top-17),behavior:'instant'});
       });
     });}
-    $('searchInput').addEventListener('input',()=>{app.acknowledged1Maja='';renderSearch();});
+    $('searchInput').addEventListener('input',()=>{armAndroidBackGuard();app.acknowledged1Maja='';renderSearch();});
     $('clearSearch').addEventListener('click',()=>{$('searchInput').value='';app.acknowledged1Maja='';renderSearch();$('searchInput').focus();});
     $('changeTo3Maja').addEventListener('click',()=>{$('searchInput').value=$('searchInput').value.replace(/1\s+Maja/i,'3 Maja');app.acknowledged1Maja='';renderSearch();});
     $('confirm1Maja').addEventListener('click',()=>{app.acknowledged1Maja=$('searchInput').value.trim();renderSearch();});
