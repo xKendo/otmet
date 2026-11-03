@@ -60,6 +60,14 @@
     .item-main small{display:block;color:var(--muted);font-size:12px;margin-top:2px;line-height:1.45}
     .item-badge{color:var(--green-dark);background:var(--green-pale);font-size:11px;font-weight:750;padding:5px 7px;border-radius:7px;flex-shrink:0}
     .no-results{background:#fff;border:1px dashed #ccd7cf;border-radius:12px;margin-top:20px;padding:23px;color:var(--muted);font-size:14px;line-height:1.5}
+    .suggestions{margin-top:12px;border:1px solid #d5e6db;border-radius:12px;background:#fff;padding:13px}
+    .suggestions-title{margin:0 0 9px;font-size:13px;font-weight:800;color:var(--green-dark)}
+    .suggestion-button{display:flex;align-items:center;justify-content:space-between;text-align:left;gap:8px;width:100%;padding:12px;border:1px solid #dce8df;border-radius:10px;background:#f6fbf8;color:var(--green-dark);font-size:14px;font-weight:700;margin-top:7px;min-height:43px}
+    .suggestion-button:hover,.suggestion-button:focus-visible{background:#eaf7ef;border-color:#8bc4a0}
+    .suggestion-button .suggest-arrow{font-size:17px;flex:none}
+    .quick-add{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+    .quick-add .hint{margin:0}
+
     .notice{border:1px solid #ebd9a6;background:#fffbeb;color:#5d4819;border-radius:13px;margin-top:20px;padding:18px;font-size:14px;line-height:1.55}
     .notice strong{display:block;font-size:15px;margin-bottom:7px}
     .notice-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
@@ -153,9 +161,9 @@
       <button type="button" class="nav-option active" data-view="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.8" cy="10.8" r="7"/><path d="m16 16 5 5"/></svg><span>Mam ulicę – gdzie ją dać?</span></button>
       <button type="button" class="nav-option" data-view="zones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="6.5" width="19" height="12" rx="2"/><path d="M12 6.5v12M2.5 12.5h19"/></svg><span>Strefy paczek – wykaz ulic</span></button>
       <button type="button" class="nav-option" data-view="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 17 1 3 3-1L19 8a2 2 0 0 0-3-3L5 16l-1 1Zm10-10 3 3"/></svg><span>Edycja bazy danych</span></button>
-      <div class="nav-version" aria-label="Informacja o aktualizacji, wersja 1.2">
+      <div class="nav-version" aria-label="Informacja o aktualizacji, wersja 1.3">
         <span class="version-icon" aria-hidden="true">ⓘ</span>
-        <span><strong>Aktualizacja 1.2</strong><small>Systemowe Wstecz czyści wyszukiwanie na Androidzie</small></span>
+        <span><strong>Aktualizacja 1.3</strong><small>Wyszukiwanie mimo literówek i szybkie dodawanie ulic</small></span>
       </div>
     </nav>
   </header>
@@ -200,7 +208,7 @@
           <input id="editStreet" class="text-input" type="text" maxlength="180" autocomplete="off" required placeholder="Np. Nowa 15 (Żabka)">
         </div>
         <div><label for="editZone">2. Wybierz strefę</label>
-          <div class="select-outer"><select id="editZone" class="select-input" required></select></div>
+          <div class="select-outer"><select id="editZone" class="select-input" required><option value="" disabled selected>Wybierz strefę…</option></select></div>
         </div>
         <div class="action-row"><button type="submit" id="saveEdit" class="primary-btn">Dodaj wpis</button><button type="button" id="cancelEdit" class="secondary-btn" hidden>Anuluj edycję</button></div>
       </form>
@@ -217,7 +225,7 @@
       </details>
     </div>
   </section>
-  <footer class="app-footer">Wyszukiwanie działa bez internetu · Dane zapisane lokalnie na urządzeniu<br>Otmęt · Wersja 1.2</footer>
+  <footer class="app-footer">Wyszukiwanie działa bez internetu · Dane zapisane lokalnie na urządzeniu<br>Otmęt · Wersja 1.3</footer>
 </div>
 <div id="navBackdrop" class="backdrop" hidden></div>
 <div id="toast" role="status" class="toast" hidden></div>
@@ -346,6 +354,72 @@ const DEFAULT_DATABASE = {"version":1,"zones":["LEWY TYŁ","PRAWY TYŁ","LEWY Ś
     candidates.sort((a,b)=>b.score-a.score||collator.compare(display(a.e),display(b.e)));
     return candidates.slice(0,80).map(x=>x.e);
   }
+  // Podpowiedzi tylko wtedy, gdy standardowe wyszukiwanie niczego nie znajduje.
+  // Nie pokazujemy strefy bez jawnego wyboru poprawnej ulicy przez użytkownika.
+  function editDistance(a,b){
+    const m=a.length,n=b.length;
+    if(Math.abs(m-n)>3)return 99;
+    const d=Array.from({length:m+1},()=>Array(n+1).fill(0));
+    for(let i=0;i<=m;i++)d[i][0]=i;
+    for(let j=0;j<=n;j++)d[0][j]=j;
+    for(let i=1;i<=m;i++)for(let j=1;j<=n;j++){
+      const cost=a[i-1]===b[j-1]?0:1;
+      d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+cost);
+      if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])
+        d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1);
+    }
+    return d[m][n];
+  }
+  function typoSuggestions(raw){
+    const q=stripPrefix(raw);
+    if(q.length<4||is1Maja(raw))return [];
+    const match=q.match(/^(.*?)\s+(\d+[a-z]?(?:\/\d+[a-z]?)?)$/);
+    const streetPart=match?match[1]:q, number=match?match[2]:'';
+    if(streetPart.length<4)return [];
+    const maxDistance=streetPart.length>=11?3:streetPart.length>=7?2:1;
+    const suggestions=new Map();
+    for(const entry of app.database){
+      // Wpisy numerowane przy wyszukiwaniu adresu nie mogą zmieniać numeru budynku.
+      if(number&&entry.number&&normalize(entry.number)!==number)continue;
+      const variants=keys(entry);
+      const best=Math.min(...variants.map(v=>editDistance(streetPart,v)));
+      if(best===0||best>maxDistance)continue;
+      // Gdy występuje zwykła ulica w bazie, nie wyświetlaj każdego jej punktu osobno.
+      if(!number&&entry.kind!=='street'&&app.database.some(e=>e.kind==='street'&&normalize(e.street)===normalize(entry.street)))continue;
+      const target=entry.street+(number&&entry.number?' '+entry.number:!number&&entry.kind!=='street'&&entry.number?' '+entry.number:'');
+      const key=normalize(target);
+      const priority=best+(entry.kind!=='street'?0.1:0);
+      if(!suggestions.has(key)||priority<suggestions.get(key).priority)
+        suggestions.set(key,{text:target,priority});
+    }
+    const all=[...suggestions.values()];
+    return all.filter(s=>!number||!all.some(other=>other.text.startsWith(s.text+' ')&&other.text!==s.text))
+      .sort((a,b)=>a.priority-b.priority||collator.compare(a.text,b.text))
+      .slice(0,3);
+  }
+  function openQuickAdd(raw){
+    const typed=raw.trim();
+    if(!typed)return;
+    // Ulica 1 Maja wymaga jednoznacznego potwierdzenia; formularz też sprawdzi je przy zapisie.
+    if(is1Maja(typed)&&app.acknowledged1Maja!==typed){
+      $('searchInput').focus();renderSearch();return;
+    }
+    if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+    cancelEdit();
+    $('editStreet').value=typed;
+    $('editZone').value='';
+    $('editMessage').textContent='Wpisz poprawną nazwę ulicy (jeśli trzeba), wybierz strefę i naciśnij „Dodaj wpis”.';
+    view('edit');
+    // Bez wymuszania otwarcia klawiatury, aby użytkownik od razu widział listę stref.
+  }
+  function appendQuickAdd(target,raw){
+    const row=dom('div','quick-add');
+    const button=dom('button','primary-btn','+ Dodaj tę ulicę');
+    button.type='button';
+    button.addEventListener('pointerdown',e=>e.preventDefault()); // Nie zmieniaj układu podczas dotyku na telefonie.
+    button.addEventListener('click',()=>openQuickAdd(raw));
+    row.append(button);target.append(row);
+  }
   function makeListItem(e,showZone=false){
     const li=dom('li');li.append(dom('span','item-dot'));
     const main=dom('span','item-main');main.append(dom('strong','',display(e)));
@@ -367,8 +441,31 @@ const DEFAULT_DATABASE = {"version":1,"zones":["LEWY TYŁ","PRAWY TYŁ","LEWY Ś
     if(is1Maja(raw))found=[];
     results.hidden=false;blank(results);
     if(!found.length){
-      const msg=dom('div','no-results',is1Maja(raw)?'Ulica 1 Maja nie jest w naszej bazie Otmętu. Jeżeli chcesz ją dodać, przejdź do edycji danych.':'Nie znaleziono takiego wpisu w bazie. Sprawdź nazwę lub dodaj ulicę w „Edycji bazy danych”.');
-      results.append(msg);return;
+      const first=is1Maja(raw);
+      const msg=dom('div','no-results',first?'Ulica 1 Maja nie jest w naszej bazie Otmętu. Dodanie wymaga ponownego potwierdzenia.':'Nie znaleziono dokładnego wpisu w bazie.');
+      results.append(msg);
+      if(!first){
+        const suggestions=typoSuggestions(raw);
+        if(suggestions.length){
+          const wrap=dom('div','suggestions');
+          wrap.append(dom('p','suggestions-title','Czy chodziło Ci o tę ulicę?'));
+          for(const suggestion of suggestions){
+            const btn=dom('button','suggestion-button');btn.type='button';
+            btn.append(dom('span','',suggestion.text),dom('span','suggest-arrow','›'));
+            btn.addEventListener('pointerdown',e=>e.preventDefault()); // Nie chowaj klawiatury przed kliknięciem.
+            btn.addEventListener('click',()=>{
+              $('searchInput').value=suggestion.text;
+              app.acknowledged1Maja='';
+              armAndroidBackGuard();
+              renderSearch();
+            });
+            wrap.append(btn);
+          }
+          results.append(wrap);
+        }
+      }
+      if(stripPrefix(raw).length>=3)appendQuickAdd(results,raw);
+      return;
     }
     const primary=found[0],zone=primary.zone;
     const top=dom('div','result-top');top.append(dom('div','result-caption','PACZKĘ ODŁÓŻ DO:'));
@@ -512,7 +609,7 @@ const DEFAULT_DATABASE = {"version":1,"zones":["LEWY TYŁ","PRAWY TYŁ","LEWY Ś
         requestAnimationFrame(()=>window.scrollTo(0,0));
       }
     });
-    $('searchInput').addEventListener('blur',()=>{document.body.classList.remove('search-typing');});
+    $('searchInput').addEventListener('blur',()=>{setTimeout(()=>{if(document.activeElement!==$('searchInput'))document.body.classList.remove('search-typing');},280);});
     if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>{
       if(document.activeElement!==$('searchInput')||!window.matchMedia('(max-width:700px)').matches)return;
       requestAnimationFrame(()=>{
@@ -520,6 +617,7 @@ const DEFAULT_DATABASE = {"version":1,"zones":["LEWY TYŁ","PRAWY TYŁ","LEWY Ś
         if(field.top>55)window.scrollTo({top:Math.max(0,window.scrollY+field.top-17),behavior:'instant'});
       });
     });}
+    $('searchView').addEventListener('pointerdown',e=>{if(e.target.closest('#searchResults button,#oneMajaWarning button'))e.preventDefault();});
     $('searchInput').addEventListener('input',()=>{armAndroidBackGuard();app.acknowledged1Maja='';renderSearch();});
     $('clearSearch').addEventListener('click',()=>{$('searchInput').value='';app.acknowledged1Maja='';renderSearch();$('searchInput').focus();});
     $('changeTo3Maja').addEventListener('click',()=>{$('searchInput').value=$('searchInput').value.replace(/1\s+Maja/i,'3 Maja');app.acknowledged1Maja='';renderSearch();});

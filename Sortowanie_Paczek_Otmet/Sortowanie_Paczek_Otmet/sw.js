@@ -1,5 +1,5 @@
-/* Sortowanie paczek · Otmęt — obsługa offline i aktualizacji v1.2 */
-const CACHE_NAME = 'otmet-paczki-v1.2';
+/* Sortowanie paczek · Otmęt — obsługa offline i aktualizacji v1.3 */
+const CACHE_NAME = 'otmet-paczki-v1.3';
 const APP_SHELL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
