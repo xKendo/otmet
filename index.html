@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#167343">
+  <meta name="description" content="Szybka wyszukiwarka stref załadunku paczek w Krapkowicach – Otmęcie. Działa offline.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Strefy paczek">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./ikona-192.png">
+  <title>Sortowanie paczek – Otmęt</title>
+  <style>
+    :root {color-scheme:light;--green:#167343;--green-dark:#105b35;--green-pale:#eaf7ef;--bg:#f6f8f7;--surface:#fff;--border:#e2e9e5;--text:#15241c;--muted:#637268;--danger:#a12c2c;--radius:17px}
+    *,*::before,*::after{box-sizing:border-box}
+    html{min-height:100%;background:var(--bg)}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);font-size:16px;min-width:310px;-webkit-tap-highlight-color:transparent}
+    button,input,select{font:inherit} button{cursor:pointer} button:disabled{opacity:.45;cursor:not-allowed}
+    button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #6bc98a;outline-offset:2px}
+    .shell{max-width:740px;margin:0 auto;padding:22px 18px 52px}
+    .topbar{display:flex;align-items:center;gap:12px;position:relative;padding-bottom:24px}
+    .brand-icon{display:grid;place-items:center;color:#fff;background:var(--green);width:45px;height:45px;border-radius:13px;flex-shrink:0}
+    .brand-icon svg{width:25px;height:25px}
+    .brand-text{flex:1;min-width:0}
+    .brand-text strong{display:block;letter-spacing:-.025em;font-size:18px;line-height:1.26}
+    .brand-text small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+    .menu-button{width:46px;height:46px;background:#fff;border:1px solid var(--border);border-radius:12px;display:grid;place-items:center;color:var(--text);box-shadow:0 1px 2px #00000006}
+    .menu-button svg{width:24px;height:24px}
+    .nav-menu{position:absolute;z-index:20;right:0;top:55px;background:white;border:1px solid var(--border);border-radius:15px;padding:6px;box-shadow:0 14px 48px #17251d24;width:min(320px,calc(100vw - 36px))}
+    .nav-menu[hidden],.view[hidden],.notice[hidden],.toast[hidden],.results[hidden],.backdrop[hidden]{display:none!important}
+    .nav-option{border:0;background:none;width:100%;display:flex;align-items:center;gap:11px;text-align:left;padding:14px 12px;border-radius:10px;color:var(--text);font-size:14px;font-weight:650;line-height:1.35}
+    .nav-option:hover,.nav-option.active{background:var(--green-pale);color:var(--green-dark)}
+    .nav-option svg{width:19px;height:19px;flex-shrink:0}
+    .heading{margin:4px 0 4px;font-size:26px;letter-spacing:-.04em;line-height:1.16;font-weight:760}
+    .subtitle{margin:0 0 24px;color:var(--muted);font-size:14px;line-height:1.5}
+    .card{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:21px;box-shadow:0 4px 22px #1d332609}
+    .form-label,.section-label{display:block;color:var(--muted);font-size:12px;letter-spacing:.07em;text-transform:uppercase;font-weight:800;margin:0 0 10px}
+    .field-wrap{position:relative}
+    .text-input,.select-input{display:block;width:100%;padding:16px 16px;border:1.5px solid #d3ded7;border-radius:12px;background:#fff;color:var(--text);min-height:54px;appearance:none;outline:none;transition:border-color .15s,box-shadow .15s}
+    .text-input:focus,.select-input:focus{border-color:var(--green);box-shadow:0 0 0 4px #2aa2681c}
+    .text-input::placeholder{color:#88938c}
+    .search-input{font-size:18px;font-weight:550;padding-left:47px;padding-right:48px}
+    .search-icon{position:absolute;top:50%;left:16px;transform:translateY(-50%);width:21px;height:21px;color:#82938a;pointer-events:none}
+    .clear-btn{position:absolute;top:50%;right:8px;transform:translateY(-50%);height:37px;width:37px;display:grid;place-items:center;border:0;border-radius:10px;background:transparent;color:var(--muted)}
+    .clear-btn:hover{background:#f0f4f1}
+    .example{font-size:12px;color:var(--muted);margin:12px 0 0;line-height:1.5}
+    .results{margin-top:20px}
+    .result-top{border:1px solid #cbe5d5;background:var(--green-pale);border-radius:15px;padding:22px}
+    .result-caption{font-size:12px;letter-spacing:.08em;font-weight:800;color:#4b7659;text-transform:uppercase}
+    .result-zone{display:block;color:var(--green-dark);font-size:clamp(27px,6vw,38px);letter-spacing:-.04em;font-weight:850;line-height:1.1;margin:10px 0 9px}
+    .result-street{font-size:15px;color:#355445;line-height:1.4}
+    .list-heading{font-size:15px;font-weight:750;margin:24px 0 12px}
+    .item-list{list-style:none;padding:0;margin:0}
+    .item-list li{background:#fff;border:1px solid var(--border);border-radius:11px;padding:13px 14px;display:flex;align-items:flex-start;gap:10px;margin-bottom:7px}
+    .item-dot{height:8px;width:8px;border-radius:50%;background:#47a675;flex:none;margin-top:7px}
+    .item-main{flex:1;min-width:0;overflow-wrap:anywhere}
+    .item-main strong{display:block;font-size:14px;line-height:1.4;font-weight:650}
+    .item-main small{display:block;color:var(--muted);font-size:12px;margin-top:2px;line-height:1.45}
+    .item-badge{color:var(--green-dark);background:var(--green-pale);font-size:11px;font-weight:750;padding:5px 7px;border-radius:7px;flex-shrink:0}
+    .no-results{background:#fff;border:1px dashed #ccd7cf;border-radius:12px;margin-top:20px;padding:23px;color:var(--muted);font-size:14px;line-height:1.5}
+    .notice{border:1px solid #ebd9a6;background:#fffbeb;color:#5d4819;border-radius:13px;margin-top:20px;padding:18px;font-size:14px;line-height:1.55}
+    .notice strong{display:block;font-size:15px;margin-bottom:7px}
+    .notice-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+    .primary-btn,.secondary-btn,.danger-btn{border-radius:11px;border:1px solid transparent;min-height:44px;padding:10px 15px;font-weight:750;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+    .primary-btn{background:var(--green);color:#fff}.primary-btn:hover{background:var(--green-dark)}
+    .secondary-btn{background:#fff;border-color:#cad9cf;color:#244e35}.secondary-btn:hover{background:#f1f8f4}
+    .danger-btn{background:#fff;border-color:#f0c6c6;color:var(--danger)}.danger-btn:hover{background:#fff2f2}
+    .full{width:100%}.hint{font-size:12px;color:var(--muted);line-height:1.6;margin:11px 0}
+    .van-cab,.van-doors{text-align:center;font-size:11px;font-weight:850;letter-spacing:.09em;color:#6b7a70;padding:9px 0}
+    .van-frame{padding:12px;border:2px solid #d2ddd6;border-radius:21px;background:#f8faf8}
+    .zone-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .zone-box{background:white;min-height:95px;border:1.5px solid #d6e2d9;border-radius:12px;color:var(--text);padding:12px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;font-size:13px;font-weight:850;line-height:1.25}
+    .zone-box:hover{border-color:#78bb91}.zone-box.selected{background:var(--green-pale);border:2px solid var(--green);color:var(--green-dark)}
+    .zone-box small{color:var(--muted);font-weight:600;font-size:11px}
+    .zone-box.selected small{color:#397952}
+    .zone-detail{margin-top:22px}
+    .zone-detail-title{font-weight:850;font-size:21px;letter-spacing:-.02em;color:var(--green-dark);margin:0 0 4px}
+    .zone-meta{font-size:12px;color:var(--muted);margin:0 0 17px}
+    .zone-list{list-style:none;margin:0;padding:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff}
+    .zone-list li{display:flex;gap:11px;border-bottom:1px solid #edf1ee;padding:11px 14px;align-items:baseline;font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+    .zone-list li:last-child{border-bottom:0}
+    .zone-list li:nth-child(even){background:#fbfcfb}
+    .zone-index{font-size:11px;color:#91a096;width:24px;flex-shrink:0;text-align:right;font-variant-numeric:tabular-nums}
+    .zone-entry{flex:1;min-width:0}
+    .point-suffix{font-weight:700;color:#146639}
+    .form-layout{display:grid;gap:15px}
+    .form-layout label{display:block;font-size:13px;font-weight:750;margin-bottom:8px}
+    .select-outer{position:relative}.select-outer:after{content:"⌄";position:absolute;right:17px;top:10px;pointer-events:none;font-size:24px;color:#688173}
+    .action-row{display:flex;flex-wrap:wrap;gap:9px}
+    .edit-records{margin-top:26px}
+    .edit-row{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);padding:11px 2px}
+    .edit-row:last-child{border:0}
+    .edit-info{flex:1;min-width:0;overflow-wrap:anywhere}
+    .edit-info strong{display:block;font-size:13px;font-weight:650}
+    .edit-info small{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+    .mini-btn{background:#f1f7f3;color:#22633d;border:1px solid #d2e5d8;border-radius:9px;min-height:36px;padding:5px 10px;font-size:12px;font-weight:800}
+    .mini-btn.delete{background:#fff6f6;color:var(--danger);border-color:#edcece}
+    details.backup{margin-top:26px;border:1px solid var(--border);border-radius:12px;padding:15px;background:#fff}
+    details.backup summary{cursor:pointer;font-weight:760;font-size:14px}
+    .backup-desc{font-size:12px;color:var(--muted);line-height:1.6}
+    .backup-buttons{display:flex;gap:8px;flex-wrap:wrap}
+    .backup-buttons button{font-size:12px;padding:9px 12px}
+    .app-footer{margin:30px 0;color:#738278;font-size:12px;text-align:center;line-height:1.6}
+    .toast{position:fixed;z-index:50;bottom:25px;left:50%;transform:translateX(-50%);background:#163c28;color:white;border-radius:12px;box-shadow:0 8px 34px #0003;padding:14px 18px;width:max-content;max-width:min(460px,90vw);font-weight:650;font-size:13px;text-align:center}
+    .backdrop{position:fixed;z-index:10;inset:0;background:transparent}
+    .small-note{margin-top:14px;border-left:3px solid #85b99a;background:#f6fbf8;padding:12px 14px;font-size:12px;color:#496553;line-height:1.6;border-radius:5px}
+    @media(min-width:700px){.shell{padding:38px 24px 58px}.topbar{padding-bottom:32px}.card{padding:30px}.zone-box{min-height:102px}}
+    @media(max-width:390px){.shell{padding:15px 12px 32px}.card{padding:17px}.brand-text strong{font-size:16px}.zone-box{font-size:12px;min-height:82px}}
+    @media(prefers-reduced-motion:no-preference){.zone-box,.primary-btn,.secondary-btn{transition:background-color .12s,border-color .12s}}
+
+    /* v1.1: powrót do wyszukiwarki z pozostałych ekranów. */
+    .back-button{height:44px;width:44px;flex:0 0 44px;background:var(--green-pale);border:1px solid #cde7d6;border-radius:12px;color:var(--green-dark);display:grid;place-items:center}
+    .back-button svg{width:24px;height:24px}
+    .back-button:hover{background:#dff2e6}
+    .back-button[hidden],.clear-btn[hidden],.secondary-btn[hidden]{display:none!important}
+    .nav-version{display:flex;align-items:center;gap:11px;padding:14px 12px 11px;border-top:1px solid var(--border);margin-top:4px;color:var(--muted);font-size:13px;line-height:1.35;cursor:default;user-select:none}
+    .nav-version .version-icon{font-size:19px;line-height:1;flex:0 0 19px;text-align:center;color:var(--green)}
+    .nav-version strong{display:block;color:#50665a;font-size:13px;font-weight:750}
+    .nav-version small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+    /* v1.1: kompaktowy podgląd podczas pisania na telefonie. */
+    @media(max-width:700px){
+      body.search-typing .shell{padding:6px 10px 16px}
+      body.search-typing .topbar,body.search-typing #searchView>.heading,body.search-typing #searchView>.subtitle{display:none}
+      body.search-typing #searchView .card{padding:11px;border-radius:12px;box-shadow:none}
+      body.search-typing #searchView .form-label{font-size:11px;margin-bottom:6px}
+      body.search-typing #searchView .search-input{min-height:46px;font-size:17px;padding-top:9px;padding-bottom:9px}
+      body.search-typing #searchView .example{display:none}
+      body.search-typing #searchView .results{margin-top:10px}
+      body.search-typing #searchView .result-top{padding:11px 13px;border-radius:11px}
+      body.search-typing #searchView .result-zone{font-size:30px;margin:5px 0 4px;line-height:1.08}
+      body.search-typing #searchView .result-street{font-size:13px}
+      body.search-typing #searchView .list-heading{margin:10px 0 7px;font-size:13px}
+      body.search-typing #searchView .item-list li{padding:9px 11px;margin-bottom:5px}
+      body.search-typing #searchView .notice,body.search-typing #searchView .no-results{margin-top:10px;padding:12px}
+      body.search-typing .app-footer{display:none}
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <button type="button" id="backHomeButton" class="back-button" aria-label="Wróć do wyszukiwania ulic" title="Wróć do wyszukiwania" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.25" aria-hidden="true"><path d="m14.5 5-7 7 7 7M8 12h12"/></svg>
+    </button>
+    <div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linejoin="round" stroke-linecap="round"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5v-9Z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9M8 5.1l8.5 4.5"/></svg></div>
+    <div class="brand-text"><strong>SORTOWANIE PACZEK</strong><small>Krapkowice · Otmęt</small></div>
+    <button type="button" id="menuButton" class="menu-button" aria-controls="navMenu" aria-expanded="false" aria-label="Otwórz menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <nav id="navMenu" class="nav-menu" hidden aria-label="Wybór ekranu">
+      <button type="button" class="nav-option active" data-view="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.8" cy="10.8" r="7"/><path d="m16 16 5 5"/></svg><span>Mam ulicę – gdzie ją dać?</span></button>
+      <button type="button" class="nav-option" data-view="zones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="6.5" width="19" height="12" rx="2"/><path d="M12 6.5v12M2.5 12.5h19"/></svg><span>Strefy paczek – wykaz ulic</span></button>
+      <button type="button" class="nav-option" data-view="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 17 1 3 3-1L19 8a2 2 0 0 0-3-3L5 16l-1 1Zm10-10 3 3"/></svg><span>Edycja bazy danych</span></button>
+      <div class="nav-version" aria-label="Informacja o aktualizacji, wersja 1.1">
+        <span class="version-icon" aria-hidden="true">ⓘ</span>
+        <span><strong>Aktualizacja 1.1</strong><small>Przycisk cofnij · widoczny wynik na telefonie</small></span>
+      </div>
+    </nav>
+  </header>
+
+  <section id="searchView" class="view" aria-labelledby="searchTitle">
+    <h1 class="heading" id="searchTitle">Gdzie odłożyć paczkę?</h1>
+    <p class="subtitle">Wpisz nazwę ulicy, numer domu lub nazwę firmy.</p>
+    <div class="card">
+      <label for="searchInput" class="form-label">Wyszukaj ulicę</label>
+      <div class="field-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="10.8" cy="10.8" r="7"/><path d="m16 16 5 5"/></svg>
+        <input id="searchInput" class="text-input search-input" autocomplete="off" spellcheck="false" placeholder="Np. zeromskiego lub ligonia 16" enterkeyhint="search">
+        <button type="button" id="clearSearch" class="clear-btn" aria-label="Wyczyść wyszukiwanie" hidden>✕</button>
+      </div>
+      <p class="example">Nie musisz wpisywać polskich znaków, np. <strong>dabrowskiego</strong> lub <strong>koziolka 19</strong>.</p>
+      <div id="oneMajaWarning" class="notice" hidden aria-live="polite">
+        <strong>Uwaga: 1 Maja czy 3 Maja?</strong>
+        W Otmęcie najprawdopodobniej chodzi o ulicę <strong>3 Maja</strong>. Zanim użyjesz „1 Maja”, musisz wyraźnie to potwierdzić.
+        <div class="notice-actions"><button type="button" id="changeTo3Maja" class="primary-btn">Chodzi o 3 Maja</button><button type="button" id="confirm1Maja" class="secondary-btn">Tak, na pewno 1 Maja</button></div>
+      </div>
+      <div id="searchResults" class="results" hidden aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="zonesView" class="view" aria-labelledby="zonesTitle" hidden>
+    <h1 class="heading" id="zonesTitle">Strefy paczek</h1>
+    <p class="subtitle">Kliknij strefę samochodu, aby zobaczyć alfabetyczny wykaz ulic.</p>
+    <div class="card">
+      <div class="van-cab">▲ PRZÓD SAMOCHODU · KABINA ▲</div>
+      <div class="van-frame"><div class="zone-grid" id="zoneGrid"></div></div>
+      <div class="van-doors">▼ TYŁ SAMOCHODU · DRZWI ZAŁADUNKOWE ▼</div>
+      <div class="zone-detail" id="zoneDetails" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="editView" class="view" aria-labelledby="editTitle" hidden>
+    <h1 class="heading" id="editTitle">Edycja bazy danych</h1>
+    <p class="subtitle">Dodawaj ulice, adresy i firmy albo poprawiaj ich strefy.</p>
+    <div class="card">
+      <form id="editForm" class="form-layout">
+        <div><label for="editStreet">1. Ulica / adres / firma</label>
+          <input id="editStreet" class="text-input" type="text" maxlength="180" autocomplete="off" required placeholder="Np. Nowa 15 (Żabka)">
+        </div>
+        <div><label for="editZone">2. Wybierz strefę</label>
+          <div class="select-outer"><select id="editZone" class="select-input" required></select></div>
+        </div>
+        <div class="action-row"><button type="submit" id="saveEdit" class="primary-btn">Dodaj wpis</button><button type="button" id="cancelEdit" class="secondary-btn" hidden>Anuluj edycję</button></div>
+      </form>
+      <div id="editMessage" class="small-note" aria-live="polite">Ten sam adres może mieć wiele firm. Ulica nie może trafić do dwóch różnych stref.</div>
+      <div class="edit-records">
+        <label for="editFilter" class="form-label">Znajdź wpis do poprawienia lub usunięcia</label>
+        <input id="editFilter" class="text-input" placeholder="Szukaj w bazie..." autocomplete="off" spellcheck="false">
+        <p id="editCount" class="hint"></p>
+        <div id="editList"></div>
+      </div>
+      <details class="backup"><summary>Kopia zapasowa i przenoszenie danych</summary>
+        <p class="backup-desc">Dane zapisują się na tym urządzeniu. Aby przenieść poprawki na inny telefon lub komputer, pobierz plik JSON i zaimportuj go na drugim urządzeniu.</p>
+        <div class="backup-buttons"><button id="exportButton" class="secondary-btn" type="button">Pobierz kopię JSON</button><button id="importButton" class="secondary-btn" type="button">Wczytaj kopię JSON</button><input type="file" id="importFile" accept=".json,application/json" hidden><button id="resetButton" class="danger-btn" type="button">Przywróć bazę początkową</button></div>
+      </details>
+    </div>
+  </section>
+  <footer class="app-footer">Wyszukiwanie działa bez internetu · Dane zapisane lokalnie na urządzeniu<br>Otmęt · Wersja 1.1</footer>
+</div>
+<div id="navBackdrop" class="backdrop" hidden></div>
+<div id="toast" role="status" class="toast" hidden></div>
+<script>
+const DEFAULT_DATABASE = {"version":1,"zones":["LEWY TYŁ","PRAWY TYŁ","LEWY ŚRODEK","PRAWY ŚRODEK","LEWY PRZÓD","PRAWY PRZÓD"],"entries":[{"id":"u001","kind":"street","street":"Stefana Żeromskiego","number":"","label":"","zone":"LEWY PRZÓD","aliases":["Żeromskiego"]},{"id":"u002","kind":"street","street":"Strzelców Bytomskich","number":"","label":"","zone":"LEWY PRZÓD"},{"id":"u003","kind":"street","street":"Bolesława Chrobrego","number":"","label":"","zone":"LEWY PRZÓD","aliases":["Chrobrego"]},{"id":"u004","kind":"street","street":"Władysława Andersa","number":"","label":"","zone":"LEWY PRZÓD"},{"id":"u005","kind":"street","street":"Józefa Elsnera","number":"","label":"","zone":"LEWY PRZÓD"},{"id":"u006","kind":"street","street":"Arki Bożka","number":"","label":"","zone":"LEWY PRZÓD"},{"id":"u007","kind":"street","street":"Gustawa Morcinka","number":"","label":"","zone":"LEWY PRZÓD"},{"id":"u008","kind":"street","street":"Reja","number":"","label":"","zone":"LEWY PRZÓD"},{"id":"u009","kind":"street","street":"Bolesława Prusa","number":"","label":"","zone":"LEWY PRZÓD"},{"id":"u010","kind":"street","street":"Władysława Reymonta","number":"","label":"","zone":"LEWY PRZÓD","aliases":["Reymonta"]},{"id":"u011","kind":"street","street":"Walerego Wróblewskiego","number":"","label":"","zone":"LEWY PRZÓD"},{"id":"u012","kind":"street","street":"Jana Kochanowskiego","number":"","label":"","zone":"LEWY PRZÓD"},{"id":"u013","kind":"street","street":"Elizy Orzeszkowej","number":"","label":"","zone":"LEWY PRZÓD"},{"id":"u014","kind":"street","street":"Marii Dąbrowskiej","number":"","label":"","zone":"LEWY PRZÓD","aliases":["M. Dąbrowskiej"]},{"id":"u015","kind":"street","street":"Jana Brzechwy","number":"","label":"","zone":"LEWY PRZÓD"},{"id":"u016","kind":"street","street":"Wojciecha Korfantego","number":"","label":"","zone":"LEWY PRZÓD"},{"id":"u017","kind":"street","street":"Emilii Plater","number":"","label":"","zone":"LEWY PRZÓD"},{"id":"u018","kind":"street","street":"Wiejska","number":"","label":"","zone":"LEWY PRZÓD"},{"id":"u019","kind":"street","street":"Polna","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u020","kind":"street","street":"Dębowa","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u021","kind":"street","street":"Górna","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u022","kind":"street","street":"Cegielniana","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u023","kind":"street","street":"Grunwaldzka","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u024","kind":"street","street":"Bohaterów Westerplatte","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u025","kind":"street","street":"Świętego Józefa","number":"","label":"","zone":"PRAWY PRZÓD","aliases":["Św. Józefa","19 Marca"]},{"id":"u026","kind":"street","street":"Zwycięstwa","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u027","kind":"street","street":"Armii Krajowej","number":"","label":"","zone":"PRAWY PRZÓD","aliases":["Armii Ludowej"]},{"id":"u028","kind":"street","street":"Janusza Korczaka","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u029","kind":"street","street":"Tuwima","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u030","kind":"street","street":"Cypriana Kamila Norwida","number":"","label":"","zone":"PRAWY PRZÓD","aliases":["Norwida"]},{"id":"u031","kind":"street","street":"Jana Kasprowicza","number":"","label":"","zone":"PRAWY PRZÓD","aliases":["Kasprowicza"]},{"id":"u032","kind":"street","street":"Wyspiańskiego","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u033","kind":"street","street":"Bema","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u034","kind":"street","street":"Broniewskiego","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u035","kind":"street","street":"Dąbrowskiego","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u036","kind":"street","street":"Harcerska","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u037","kind":"street","street":"I Dywizji","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u038","kind":"street","street":"Sąsiedzka","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u039","kind":"street","street":"Traugutta","number":"","label":"","zone":"PRAWY PRZÓD"},{"id":"u040","kind":"street","street":"Koziołka","number":"","label":"","zone":"LEWY ŚRODEK","aliases":["Ks. Koziołka","Księdza Koziołka","ks Koziołka"]},{"id":"u041","kind":"point","street":"Koziołka","number":"2","label":"Makrus","zone":"LEWY ŚRODEK","aliases":["Księdza Koziołka","Ks. Koziołka"]},{"id":"u042","kind":"point","street":"Koziołka","number":"2","label":"Han Mar","zone":"LEWY ŚRODEK","aliases":["Księdza Koziołka","Ks. Koziołka"]},{"id":"u043","kind":"point","street":"Koziołka","number":"2","label":"Profi Garage","zone":"LEWY ŚRODEK","aliases":["Księdza Koziołka","Ks. Koziołka"]},{"id":"u044","kind":"point","street":"Koziołka","number":"2","label":"Stacja paliw Pieprzyk","zone":"LEWY ŚRODEK","aliases":["Księdza Koziołka","Ks. Koziołka"]},{"id":"u045","kind":"point","street":"Koziołka","number":"4","label":"ADEX","zone":"LEWY ŚRODEK","aliases":["Księdza Koziołka","Ks. Koziołka"]},{"id":"u046","kind":"point","street":"Koziołka","number":"4","label":"Naprzód","zone":"LEWY ŚRODEK","aliases":["Księdza Koziołka","Ks. Koziołka"]},{"id":"u047","kind":"point","street":"Koziołka","number":"10A","label":"Shell","zone":"LEWY ŚRODEK","aliases":["Księdza Koziołka","Ks. Koziołka"]},{"id":"u048","kind":"point","street":"Koziołka","number":"10A","label":"DPD Pickup","zone":"LEWY ŚRODEK","aliases":["Księdza Koziołka","Ks. Koziołka"]},{"id":"u049","kind":"point","street":"Koziołka","number":"12","label":"Żabka","zone":"LEWY ŚRODEK","aliases":["Księdza Koziołka","Ks. Koziołka"]},{"id":"u050","kind":"point","street":"Koziołka","number":"12","label":"DPD Pickup","zone":"LEWY ŚRODEK","aliases":["Księdza Koziołka","Ks. Koziołka"]},{"id":"u051","kind":"point","street":"Koziołka","number":"19","label":"BHP Sprinters","zone":"LEWY ŚRODEK","aliases":["Księdza Koziołka","Ks. Koziołka"]},{"id":"u052","kind":"point","street":"Koziołka","number":"46","label":"Kaufland","zone":"LEWY ŚRODEK","aliases":["Księdza Koziołka","Ks. Koziołka"]},{"id":"u053","kind":"street","street":"Leśna","number":"","label":"","zone":"PRAWY ŚRODEK"},{"id":"u054","kind":"street","street":"Mikołaja Kopernika","number":"","label":"","zone":"PRAWY ŚRODEK","aliases":["Kopernika"]},{"id":"u055","kind":"street","street":"Adama Mickiewicza","number":"","label":"","zone":"PRAWY ŚRODEK","aliases":["Mickiewicza"]},{"id":"u056","kind":"street","street":"Działkowa","number":"","label":"","zone":"PRAWY ŚRODEK"},{"id":"u057","kind":"street","street":"Juliusza Ligonia","number":"","label":"","zone":"PRAWY ŚRODEK","aliases":["Ligonia"]},{"id":"u058","kind":"street","street":"Jakuba Kani","number":"","label":"","zone":"PRAWY ŚRODEK","aliases":["Kani"]},{"id":"u059","kind":"street","street":"3 Maja","number":"","label":"","zone":"PRAWY ŚRODEK"},{"id":"u060","kind":"street","street":"Krótka","number":"","label":"","zone":"PRAWY ŚRODEK"},{"id":"u061","kind":"street","street":"Piastowska","number":"","label":"","zone":"PRAWY ŚRODEK"},{"id":"u062","kind":"street","street":"Dambonia","number":"","label":"","zone":"PRAWY ŚRODEK"},{"id":"u063","kind":"street","street":"Ogrodowa","number":"","label":"","zone":"PRAWY ŚRODEK"},{"id":"u064","kind":"point","street":"Juliusza Ligonia","number":"16","label":"Media Expert","zone":"PRAWY ŚRODEK","aliases":["Ligonia"]},{"id":"u065","kind":"point","street":"Juliusza Ligonia","number":"16","label":"SMYK","zone":"PRAWY ŚRODEK","aliases":["Ligonia"]},{"id":"u066","kind":"point","street":"Juliusza Ligonia","number":"16","label":"Pepco","zone":"PRAWY ŚRODEK","aliases":["Ligonia"]},{"id":"u067","kind":"point","street":"Juliusza Ligonia","number":"16","label":"Dealz","zone":"PRAWY ŚRODEK","aliases":["Ligonia"]},{"id":"u068","kind":"point","street":"Juliusza Ligonia","number":"16","label":"paczkomat DPD","zone":"PRAWY ŚRODEK","aliases":["Ligonia"]},{"id":"u069","kind":"point","street":"Juliusza Ligonia","number":"14","label":"Action","zone":"PRAWY ŚRODEK","aliases":["Ligonia"]},{"id":"u070","kind":"point","street":"Juliusza Ligonia","number":"14","label":"KiK","zone":"PRAWY ŚRODEK","aliases":["Ligonia"]},{"id":"u071","kind":"point","street":"Juliusza Ligonia","number":"14","label":"Martes Sport","zone":"PRAWY ŚRODEK","aliases":["Ligonia"]},{"id":"u072","kind":"point","street":"Juliusza Ligonia","number":"14","label":"paczkomat InPost","zone":"PRAWY ŚRODEK","aliases":["Ligonia"]},{"id":"u073","kind":"point","street":"Juliusza Ligonia","number":"14","label":"automat ORLEN Paczka","zone":"PRAWY ŚRODEK","aliases":["Ligonia"]},{"id":"u074","kind":"point","street":"Piastowska","number":"1","label":"paczkomat","zone":"PRAWY ŚRODEK"},{"id":"u075","kind":"point","street":"3 Maja","number":"36","label":"paczkomat","zone":"PRAWY ŚRODEK","note":"Według użytkownika obok Orlenu"},{"id":"u076","kind":"point","street":"3 Maja","number":"36","label":"Biedronka","zone":"PRAWY ŚRODEK","note":"Wpis do weryfikacji"},{"id":"u077","kind":"street","street":"Miarki","number":"","label":"","zone":"LEWY TYŁ"},{"id":"u078","kind":"street","street":"Jagiellońska","number":"","label":"","zone":"LEWY TYŁ"},{"id":"u079","kind":"street","street":"Osiedle Sady","number":"","label":"","zone":"LEWY TYŁ","aliases":["Sady"]},{"id":"u080","kind":"street","street":"Osiedle XXX-lecia","number":"","label":"","zone":"LEWY TYŁ","aliases":["Osiedle 30-lecia","os XXX-lecia","XXX-lecia"]},{"id":"u081","kind":"street","street":"Osiedle Maksymiliana Marii Kolbe","number":"","label":"","zone":"LEWY TYŁ","aliases":["o. Maksymiliana Marii Kolbe","Maksymiliana Marii Kolbe","Kolbe"]},{"id":"u082","kind":"street","street":"Odrowążów","number":"","label":"","zone":"LEWY TYŁ"},{"id":"u083","kind":"street","street":"Aleja Jana Pawła II","number":"","label":"","zone":"LEWY TYŁ","aliases":["Jana Pawła II","Al. Jana Pawła II"]},{"id":"u084","kind":"address","street":"Miodowa","number":"2","label":"","zone":"LEWY TYŁ","note":"Dotyczy wyłącznie numeru 2, nie całej ulicy Miodowej"},{"id":"u085","kind":"street","street":"Jana Kilińskiego","number":"","label":"","zone":"PRAWY TYŁ","aliases":["Kilińskiego"]},{"id":"u086","kind":"street","street":"Obuwników","number":"","label":"","zone":"PRAWY TYŁ"},{"id":"u087","kind":"street","street":"Ludwika Waryńskiego","number":"","label":"","zone":"PRAWY TYŁ"},{"id":"u088","kind":"street","street":"Tomasza Baty","number":"","label":"","zone":"PRAWY TYŁ","aliases":["Baty","Buczka"]},{"id":"u089","kind":"street","street":"Fryderyka Chopina","number":"","label":"","zone":"PRAWY TYŁ","aliases":["Chopina"]},{"id":"u090","kind":"street","street":"Ignacego Krasickiego","number":"","label":"","zone":"PRAWY TYŁ"},{"id":"u091","kind":"street","street":"Księdza Duszy","number":"","label":"","zone":"PRAWY TYŁ","aliases":["Ks. Duszy","Duszy"]},{"id":"u092","kind":"point","street":"Jana Kilińskiego","number":"11","label":"Żabka","zone":"PRAWY TYŁ","aliases":["Kilińskiego"]},{"id":"u093","kind":"point","street":"Księdza Duszy","number":"29","label":"Cukiernia Magosz","zone":"PRAWY TYŁ","aliases":["Duszy"]},{"id":"u094","kind":"point","street":"Damrota","number":"4","label":"paczkomat","zone":"PRAWY TYŁ","note":"Tylko adres Damrota 4 potwierdzony przez użytkownika"}],"notes":{"unassigned":["DHL BOX 24/7: automat widoczny na screenie, dokładny adres niepotwierdzony"],"warnings":["1 Maja: dla Otmętu wymaga jednoznacznego potwierdzenia, prawdopodobnie chodzi o 3 Maja","Szczegóły części firm i sklepów warto potwierdzić podczas pracy w terenie"]}};
+</script>
+<script>
+(function(){
+  'use strict';
+  const STORAGE_KEY='otmet-paczki-db-v1';
+  const ZONES=DEFAULT_DATABASE.zones;
+  const collator=new Intl.Collator('pl',{sensitivity:'base',numeric:true});
+  const $=id=>document.getElementById(id);
+  const oldUrl = location.protocol === 'file:';
+  const app={view:'search',selectedZone:'PRAWY ŚRODEK',editingId:null,acknowledged1Maja:'',database:[],storageOK:true};
+  function clone(obj){return JSON.parse(JSON.stringify(obj));}
+  function normalize(text){return String(text||'').toLowerCase().replace(/ł/g,'l').replace(/Ł/g,'l').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();}
+  function stripPrefix(text){return normalize(text).replace(/^(ulica|ul\.)\s+/,'');}
+  function keys(e){return [e.street,...(e.aliases||[])].map(stripPrefix);}
+  function display(e){return e.street+(e.number?' '+e.number:'')+(e.label?' ('+e.label+')':'');}
+  function sorted(arr){return [...arr].sort((a,b)=>collator.compare(a.street,b.street)||collator.compare(a.number||'',b.number||'')||collator.compare(a.label||'',b.label||''));}
+  function uniqueStreetCount(zone){return new Set(app.database.filter(x=>x.zone===zone).map(x=>normalize(x.street))).size;}
+  function is1Maja(text){return /(?:^|\s)1\s+maja(?:\s|$)/.test(normalize(text));}
+  function load(){
+    try{
+      const stored=localStorage.getItem(STORAGE_KEY);
+      if(stored){const json=JSON.parse(stored);if(Array.isArray(json)&&json.length&&json.every(validEntry)){app.database=json;return;}}
+    }catch(err){app.storageOK=false;}
+    app.database=clone(DEFAULT_DATABASE.entries);
+  }
+  function save(){
+    try{localStorage.setItem(STORAGE_KEY,JSON.stringify(app.database));app.storageOK=true;return true;}
+    catch(err){app.storageOK=false;toast('Uwaga: przeglądarka nie pozwala zapisać danych. Pobierz kopię JSON.');return false;}
+  }
+  function validEntry(e){return e&&typeof e.id==='string'&&typeof e.street==='string'&&typeof e.number==='string'&&typeof e.label==='string'&&ZONES.includes(e.zone)&&['street','address','point'].includes(e.kind)&&(!e.aliases||Array.isArray(e.aliases));}
+  let toastTimer;
+  function toast(msg){const t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{t.hidden=true;},4000);}
+  function setMenu(open){$('navMenu').hidden=!open;$('navBackdrop').hidden=!open;$('menuButton').setAttribute('aria-expanded',String(open));}
+  function view(name){app.view=name;setMenu(false);document.body.classList.remove('search-typing');$('backHomeButton').hidden=name==='search';for(const n of ['search','zones','edit']){ $(n+'View').hidden=n!==name;}
+    document.querySelectorAll('.nav-option').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
+    if(name==='zones')renderZones();if(name==='edit')renderEditor();window.scrollTo({top:0,behavior:'instant'});
+  }
+  function dom(tag,className,text){const el=document.createElement(tag);if(className)el.className=className;if(text!==undefined)el.textContent=text;return el;}
+  function blank(node){node.replaceChildren();}
+  function resultCandidates(raw){
+    const q=stripPrefix(raw);
+    if(!q)return [];
+    // If the name is an exact street match, do not pull another street merely containing the same surname.
+    const exactStreet=app.database.filter(e=>e.kind==='street'&&keys(e).includes(q));
+    if(exactStreet.length){
+      const baseKeys=new Set(exactStreet.map(e=>normalize(e.street)));
+      return sorted(app.database.filter(e=>baseKeys.has(normalize(e.street))));
+    }
+    const candidates=[];
+    for(const e of app.database){
+      const streetKeys=keys(e);
+      const label=normalize(e.label);
+      const name=stripPrefix(display(e));
+      const addresses=streetKeys.map(k=>k+(e.number?' '+normalize(e.number):''));
+      let score=0;
+      if(addresses.includes(q))score=100;
+      else if(name===q||streetKeys.includes(q))score=95;
+      else if(addresses.some(k=>k.startsWith(q+' '))||streetKeys.some(k=>k.startsWith(q)))score=70;
+      else if(label===q)score=80;
+      else if(label.includes(q)&&q.length>=3)score=55;
+      else if(streetKeys.some(k=>k.includes(q))||name.includes(q))score=30;
+      if(score)candidates.push({e,score});
+    }
+    // For full address searches, exclude a similarly numbered house ("2" must not find "20").
+    const addrMatch=q.match(/^(.*?)\s+(\d+[a-z]?(?:\/\d+[a-z]?)?)$/);
+    if(addrMatch){
+      const st=addrMatch[1],num=addrMatch[2];
+      const sameStreet=app.database.filter(e=>keys(e).includes(st));
+      if(sameStreet.length){
+        const withNum=sameStreet.filter(e=>e.number&&(normalize(e.number)===num||/^[0-9]+$/.test(num)&&normalize(e.number).match(new RegExp('^'+num+'[a-z]$'))));
+        if(withNum.length)return sorted(withNum).sort((a,b)=>Number(/paczkomat/i.test(b.label))-Number(/paczkomat/i.test(a.label)));
+        const main=sameStreet.filter(e=>e.kind==='street');
+        return sorted(main);
+      }
+    }
+    candidates.sort((a,b)=>b.score-a.score||collator.compare(display(a.e),display(b.e)));
+    return candidates.slice(0,80).map(x=>x.e);
+  }
+  function makeListItem(e,showZone=false){
+    const li=dom('li');li.append(dom('span','item-dot'));
+    const main=dom('span','item-main');main.append(dom('strong','',display(e)));
+    if(e.note&&e.note.includes('weryfikacji'))main.append(dom('small','',e.note));
+    if(showZone)main.append(dom('small','',e.zone));
+    li.append(main);
+    if(e.kind!=='street'&&e.label){li.append(dom('span','item-badge','PUNKT'));}
+    return li;
+  }
+  function renderSearch(){
+    const raw=$('searchInput').value.trim();
+    $('clearSearch').hidden=!raw;
+    const warning=$('oneMajaWarning'),results=$('searchResults');
+    if(!raw){warning.hidden=true;results.hidden=true;blank(results);return;}
+    if(is1Maja(raw)&&app.acknowledged1Maja!==raw){warning.hidden=false;results.hidden=true;blank(results);return;}
+    warning.hidden=true;
+    let found=resultCandidates(raw);
+    // Confirmed 1 Maja must not silently match 3 Maja.
+    if(is1Maja(raw))found=[];
+    results.hidden=false;blank(results);
+    if(!found.length){
+      const msg=dom('div','no-results',is1Maja(raw)?'Ulica 1 Maja nie jest w naszej bazie Otmętu. Jeżeli chcesz ją dodać, przejdź do edycji danych.':'Nie znaleziono takiego wpisu w bazie. Sprawdź nazwę lub dodaj ulicę w „Edycji bazy danych”.');
+      results.append(msg);return;
+    }
+    const primary=found[0],zone=primary.zone;
+    const top=dom('div','result-top');top.append(dom('div','result-caption','PACZKĘ ODŁÓŻ DO:'));
+    top.append(dom('strong','result-zone',zone));
+    top.append(dom('div','result-street',display(primary)));
+    results.append(top);
+    const extras=found.filter(e=>e.id!==primary.id);
+    if(extras.length){
+      results.append(dom('h2','list-heading',extras.length+' powiązanych wpisów'));
+      const ul=dom('ul','item-list');extras.forEach(e=>ul.append(makeListItem(e,e.zone!==zone)));results.append(ul);
+      if(extras.some(e=>e.zone!==zone))results.append(dom('p','small-note','Uwaga: część wyników odnosi się do innych stref. Sprawdź pełną nazwę ulicy.'));
+    }
+  }
+  function renderZones(){
+    const grid=$('zoneGrid');blank(grid);
+    for(const zone of ZONES){
+      const b=dom('button','zone-box'+(app.selectedZone===zone?' selected':''));b.type='button';b.setAttribute('aria-pressed',String(app.selectedZone===zone));
+      b.append(dom('span','',zone));b.append(dom('small','',uniqueStreetCount(zone)+' ulic / adresów'));
+      b.addEventListener('click',()=>{app.selectedZone=zone;renderZones();});grid.append(b);
+    }
+    // Zone order comes from the explicit [LEWY TYŁ, PRAWY TYŁ, LEWY ŚRODEK, PRAWY ŚRODEK, LEWY PRZÓD, PRAWY PRZÓD] array.
+    const dest=$('zoneDetails');blank(dest);
+    dest.append(dom('h2','zone-detail-title',app.selectedZone));
+    const entries=sorted(app.database.filter(e=>e.zone===app.selectedZone));
+    dest.append(dom('p','zone-meta',uniqueStreetCount(app.selectedZone)+' ulic / adresów · '+entries.length+' wpisów razem'));
+    const ul=dom('ol','zone-list');for(let i=0;i<entries.length;i++){
+      const e=entries[i],li=dom('li');li.append(dom('span','zone-index',String(i+1)+'.'));
+      const txt=dom('span','zone-entry');txt.append(document.createTextNode(e.street+(e.number?' '+e.number:'')));
+      if(e.label)txt.append(dom('span','point-suffix',' ('+e.label+')'));
+      li.append(txt);ul.append(li);
+    }dest.append(ul);
+  }
+  function parseEntry(raw){
+    let value=raw.trim().replace(/\s+/g,' ').replace(/^(ulica|ul\.)\s+/i,'');
+    let label='';const match=value.match(/\s*\(([^()]+)\)\s*$/);
+    if(match){label=match[1].trim();value=value.slice(0,match.index).trim();}
+    let number='';const address=value.match(/^(.*\D)\s+(\d+[a-zA-Z]?(?:\/\d+[a-zA-Z]?)?)$/);
+    if(address){value=address[1].trim();number=address[2].toUpperCase();}
+    if(!value)throw Error('Wpisz nazwę ulicy.');
+    if(value.length>110||label.length>70)throw Error('Wpis jest zbyt długi.');
+    return {street:value,number,label,kind:!number?'street':label?'point':'address'};
+  }
+  function sameSt(e,s){return normalize(e.street)===normalize(s)||keys(e).includes(stripPrefix(s));}
+  function checkDuplicate(item,zone,excludeId){
+    const existing=app.database.filter(e=>e.id!==excludeId&&sameSt(e,item.street));
+    const others=existing.filter(e=>e.zone!==zone);
+    if(others.length){
+      return 'Ta ulica / adres już należy do strefy '+others[0].zone+'. Nie dodano duplikatu. Aby zmienić przypisanie całej ulicy, edytuj jej istniejący wpis.';
+    }
+    const identical=existing.some(e=>normalize(e.number)===normalize(item.number)&&normalize(e.label)===normalize(item.label));
+    if(identical)return 'Taki wpis już istnieje w bazie. Możesz go edytować na liście poniżej.';
+    return '';
+  }
+  function handleSubmit(ev){
+    ev.preventDefault();const raw=$('editStreet').value,zone=$('editZone').value;
+    if(is1Maja(raw)){
+      const ok=window.confirm('Czy na pewno chodzi o ulicę 1 Maja, a nie o 3 Maja?\n\nKliknij ANULUJ, jeśli chodzi o 3 Maja.');
+      if(!ok){$('editMessage').textContent='Nie zapisano. Sprawdź, czy chodzi o 3 Maja.';return;}
+    }
+    let item;try{item=parseEntry(raw);}catch(e){toast(e.message);return;}
+    // Keep typed aliases (e.g. 'Ligonia') under the canonical street ('Juliusza Ligonia').
+    const canonical=app.database.find(e=>e.kind==='street'&&e.zone===zone&&sameSt(e,item.street));
+    if(canonical&&item.kind!=='street')item.street=canonical.street;
+    const err=checkDuplicate(item,zone,app.editingId);
+    if(err){$('editMessage').textContent=err;toast('Nie zapisano – sprawdź komunikat.');return;}
+    if(app.editingId){
+      const current=app.database.find(e=>e.id===app.editingId);
+      if(!current)return;
+      // When moving an entire street, move every location under that street.
+      const old=current.street,oldZone=current.zone;
+      if(current.kind==='street'&&(zone!==oldZone||normalize(item.street)!==normalize(old))){
+        const related=app.database.filter(e=>e.id!==current.id&&e.zone===oldZone&&normalize(e.street)===normalize(old));
+        if(related.length){
+          const okay=window.confirm('Zmieniasz ulicę z '+related.length+' dodatkowymi wpisami. Przenieść / przemianować razem wszystkie firmy i punkty?');
+          if(!okay)return;
+          related.forEach(e=>{e.street=item.street;e.zone=zone;});
+        }
+      }
+      Object.assign(current,item,{zone});
+      $('editMessage').textContent='Zapisano zmiany w bazie.';
+    } else {
+      const id='w'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+      app.database.push({id,...item,zone});$('editMessage').textContent='Dodano nowy wpis.';
+    }
+    save();cancelEdit();renderEditor();renderSearch();toast('Zapisano.');
+  }
+  function editStart(id){const e=app.database.find(x=>x.id===id);if(!e)return;
+    app.editingId=id;$('editStreet').value=display(e);$('editZone').value=e.zone;
+    $('saveEdit').textContent='Zapisz zmiany';$('cancelEdit').hidden=false;
+    $('editMessage').textContent='Edytujesz: '+display(e)+'. Zapis zastąpi dotychczasowy wpis.';
+    $('editStreet').focus();$('editForm').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function cancelEdit(){app.editingId=null;$('editForm').reset();$('saveEdit').textContent='Dodaj wpis';$('cancelEdit').hidden=true;}
+  function deleteEntry(id){const e=app.database.find(x=>x.id===id);if(!e)return;
+    const related=e.kind==='street'?app.database.filter(x=>x.id!==id&&normalize(x.street)===normalize(e.street)&&x.zone===e.zone):[];
+    const msg='Usunąć „'+display(e)+'”?'+(related.length?'\nUwaga: powiązane firmy i adresy ('+related.length+') pozostaną w bazie.':'');
+    if(!window.confirm(msg))return;
+    app.database=app.database.filter(x=>x.id!==id);if(app.editingId===id)cancelEdit();save();renderEditor();renderSearch();toast('Usunięto wpis.');
+  }
+  function renderEditor(){
+    const filter=normalize($('editFilter').value);const arr=sorted(app.database.filter(e=>!filter||normalize(display(e)).includes(filter)||normalize(e.zone).includes(filter)||keys(e).some(k=>k.includes(filter))));
+    const list=$('editList');blank(list);
+    $('editCount').textContent=arr.length+' z '+app.database.length+' wpisów w bazie';
+    for(const e of arr.slice(0,filter?120:55)){
+      const row=dom('div','edit-row'),info=dom('div','edit-info');info.append(dom('strong','',display(e)));info.append(dom('small','',e.zone));
+      const edit=dom('button','mini-btn','Edytuj');edit.type='button';edit.addEventListener('click',()=>editStart(e.id));
+      const del=dom('button','mini-btn delete','Usuń');del.type='button';del.addEventListener('click',()=>deleteEntry(e.id));
+      row.append(info,edit,del);list.append(row);
+    }
+    if(arr.length>(filter?120:55))list.append(dom('p','hint','Aby zobaczyć pozostałe wpisy, wpisz nazwę w polu powyżej.'));
+  }
+  function exportData(){
+    const content=JSON.stringify({app:'sortowanie-paczek-otmet',version:1,exportedAt:new Date().toISOString(),zones:ZONES,entries:app.database},null,2);
+    const url=URL.createObjectURL(new Blob([content],{type:'application/json;charset=utf-8'}));
+    const a=document.createElement('a');a.href=url;a.download='baza_paczek_otmet_'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);toast('Pobrano kopię bazy.');
+  }
+  async function importData(file){
+    if(!file)return;
+    try{
+      const data=JSON.parse(await file.text());const entries=Array.isArray(data)?data:data.entries;
+      if(!Array.isArray(entries)||!entries.length||entries.length>20000||!entries.every(validEntry))throw Error('Niepoprawny format bazy danych.');
+      const ids=new Set(entries.map(e=>e.id));if(ids.size!==entries.length)throw Error('Baza zawiera powtarzające się identyfikatory.');
+      if(!window.confirm('Wczytanie kopii zastąpi całą aktualną bazę na tym urządzeniu. Kontynuować?'))return;
+      app.database=clone(entries);save();cancelEdit();renderEditor();renderZones();renderSearch();toast('Wczytano bazę: '+entries.length+' wpisów.');
+    }catch(err){toast('Nie udało się wczytać: '+err.message);}
+    finally{$('importFile').value='';}
+  }
+  function init(){load();
+    for(const z of ZONES){const opt=dom('option','',z);opt.value=z;$('editZone').append(opt);}
+    $('backHomeButton').addEventListener('click',()=>view('search'));
+    $('menuButton').addEventListener('click',()=>setMenu($('navMenu').hidden));
+    $('navBackdrop').addEventListener('click',()=>setMenu(false));
+    document.querySelectorAll('.nav-option').forEach(btn=>btn.addEventListener('click',()=>view(btn.dataset.view)));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false);});
+    // Android/iOS: gdy klawiatura jest otwarta, wynik mieści się tuż pod polem.
+    $('searchInput').addEventListener('focus',()=>{
+      document.body.classList.add('search-typing');
+      if(window.matchMedia('(max-width:700px)').matches){
+        requestAnimationFrame(()=>window.scrollTo(0,0));
+      }
+    });
+    $('searchInput').addEventListener('blur',()=>{document.body.classList.remove('search-typing');});
+    if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>{
+      if(document.activeElement!==$('searchInput')||!window.matchMedia('(max-width:700px)').matches)return;
+      requestAnimationFrame(()=>{
+        const field=$('searchInput').getBoundingClientRect();
+        if(field.top>55)window.scrollTo({top:Math.max(0,window.scrollY+field.top-17),behavior:'instant'});
+      });
+    });}
+    $('searchInput').addEventListener('input',()=>{app.acknowledged1Maja='';renderSearch();});
+    $('clearSearch').addEventListener('click',()=>{$('searchInput').value='';app.acknowledged1Maja='';renderSearch();$('searchInput').focus();});
+    $('changeTo3Maja').addEventListener('click',()=>{$('searchInput').value=$('searchInput').value.replace(/1\s+Maja/i,'3 Maja');app.acknowledged1Maja='';renderSearch();});
+    $('confirm1Maja').addEventListener('click',()=>{app.acknowledged1Maja=$('searchInput').value.trim();renderSearch();});
+    $('editForm').addEventListener('submit',handleSubmit);
+    $('cancelEdit').addEventListener('click',()=>{cancelEdit();$('editMessage').textContent='Anulowano edycję.';});
+    $('editFilter').addEventListener('input',renderEditor);
+    $('exportButton').addEventListener('click',exportData);
+    $('importButton').addEventListener('click',()=>$('importFile').click());
+    $('importFile').addEventListener('change',e=>importData(e.target.files?.[0]));
+    $('resetButton').addEventListener('click',()=>{if(!window.confirm('Przywrócić początkową bazę? Wszystkie Twoje zmiany na tym urządzeniu zostaną usunięte.'))return;app.database=clone(DEFAULT_DATABASE.entries);save();cancelEdit();renderEditor();renderSearch();renderZones();toast('Przywrócono bazę początkową.');});
+    if(!app.storageOK){$('editMessage').textContent='Uwaga: automatyczny zapis jest niedostępny. Po zmianach pobierz kopię JSON.';}
+    renderSearch();renderZones();
+    if('serviceWorker'in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(r=>r.update().catch(()=>{})).catch(()=>{});
+  }
+  init();
+  // Exposed read-only test hooks; not used by the UI.
+  window.__APP_TEST__={get entries(){return app.database;},normalize,resultCandidates,view};
+})();
+</script>
+</body>
+</html>
