@@ -1,17 +1,51 @@
-/* Offline-first cache for the installed PWA. No network is used for searching. */
-const CACHE='sortowanie-otmet-v1-2026-11';
-const FILES=['./','./index.html','./manifest.webmanifest','./ikona-192.png','./ikona-512.png'];
-self.addEventListener('install',event=>{
-  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting()));
+/* Sortowanie paczek · Otmęt — obsługa offline i aktualizacji v1.1 */
+const CACHE_NAME = 'otmet-paczki-v1.1';
+const APP_SHELL = ['./', './index.html'];
+
+self.addEventListener('install', event => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(APP_SHELL);
+    // Dodatkowe pliki są opcjonalne – ich brak nie blokuje użycia offline.
+    await Promise.allSettled(['./manifest.webmanifest','./ikona-192.png','./ikona-512.png']
+      .map(url => cache.add(url)));
+    await self.skipWaiting();
+  })());
 });
-self.addEventListener('activate',event=>{
-  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('sortowanie-otmet-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
+
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    const names = await caches.keys();
+    await Promise.all(names.filter(name => name.startsWith('otmet-paczki-') && name !== CACHE_NAME)
+      .map(name => caches.delete(name)));
+    await self.clients.claim();
+  })());
 });
-self.addEventListener('fetch',event=>{
-  const req=event.request;
-  if(req.method!=='GET'||new URL(req.url).origin!==location.origin)return;
-  event.respondWith(caches.match(req).then(cached=>cached||fetch(req).then(res=>{
-    if(res.ok&&new URL(req.url).origin===location.origin){const copy=res.clone();caches.open(CACHE).then(cache=>cache.put(req,copy));}
-    return res;
-  }).catch(()=>caches.match('./index.html'))));
+
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
+  const isPage = request.mode === 'navigate' || new URL(request.url).pathname.endsWith('/index.html');
+  if (isPage) {
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE_NAME);
+      try {
+        // Każde wejście online sprawdza nowy kod, ale bez internetu działa wersja zapisana.
+        const response = await fetch(request, {cache:'no-store'});
+        if (response.ok) await cache.put('./index.html', response.clone());
+        return response;
+      } catch (error) {
+        return await cache.match('./index.html') || Response.error();
+      }
+    })());
+    return;
+  }
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    const hit = await cache.match(request);
+    if (hit) return hit;
+    const response = await fetch(request);
+    if (response.ok) await cache.put(request,response.clone());
+    return response;
+  })());
 });

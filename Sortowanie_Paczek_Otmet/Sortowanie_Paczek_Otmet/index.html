@@ -109,11 +109,41 @@
     @media(min-width:700px){.shell{padding:38px 24px 58px}.topbar{padding-bottom:32px}.card{padding:30px}.zone-box{min-height:102px}}
     @media(max-width:390px){.shell{padding:15px 12px 32px}.card{padding:17px}.brand-text strong{font-size:16px}.zone-box{font-size:12px;min-height:82px}}
     @media(prefers-reduced-motion:no-preference){.zone-box,.primary-btn,.secondary-btn{transition:background-color .12s,border-color .12s}}
+
+    /* v1.1: powrót do wyszukiwarki z pozostałych ekranów. */
+    .back-button{height:44px;width:44px;flex:0 0 44px;background:var(--green-pale);border:1px solid #cde7d6;border-radius:12px;color:var(--green-dark);display:grid;place-items:center}
+    .back-button svg{width:24px;height:24px}
+    .back-button:hover{background:#dff2e6}
+    .back-button[hidden],.clear-btn[hidden],.secondary-btn[hidden]{display:none!important}
+    .nav-version{display:flex;align-items:center;gap:11px;padding:14px 12px 11px;border-top:1px solid var(--border);margin-top:4px;color:var(--muted);font-size:13px;line-height:1.35;cursor:default;user-select:none}
+    .nav-version .version-icon{font-size:19px;line-height:1;flex:0 0 19px;text-align:center;color:var(--green)}
+    .nav-version strong{display:block;color:#50665a;font-size:13px;font-weight:750}
+    .nav-version small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+    /* v1.1: kompaktowy podgląd podczas pisania na telefonie. */
+    @media(max-width:700px){
+      body.search-typing .shell{padding:6px 10px 16px}
+      body.search-typing .topbar,body.search-typing #searchView>.heading,body.search-typing #searchView>.subtitle{display:none}
+      body.search-typing #searchView .card{padding:11px;border-radius:12px;box-shadow:none}
+      body.search-typing #searchView .form-label{font-size:11px;margin-bottom:6px}
+      body.search-typing #searchView .search-input{min-height:46px;font-size:17px;padding-top:9px;padding-bottom:9px}
+      body.search-typing #searchView .example{display:none}
+      body.search-typing #searchView .results{margin-top:10px}
+      body.search-typing #searchView .result-top{padding:11px 13px;border-radius:11px}
+      body.search-typing #searchView .result-zone{font-size:30px;margin:5px 0 4px;line-height:1.08}
+      body.search-typing #searchView .result-street{font-size:13px}
+      body.search-typing #searchView .list-heading{margin:10px 0 7px;font-size:13px}
+      body.search-typing #searchView .item-list li{padding:9px 11px;margin-bottom:5px}
+      body.search-typing #searchView .notice,body.search-typing #searchView .no-results{margin-top:10px;padding:12px}
+      body.search-typing .app-footer{display:none}
+    }
   </style>
 </head>
 <body>
 <div class="shell">
   <header class="topbar">
+    <button type="button" id="backHomeButton" class="back-button" aria-label="Wróć do wyszukiwania ulic" title="Wróć do wyszukiwania" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.25" aria-hidden="true"><path d="m14.5 5-7 7 7 7M8 12h12"/></svg>
+    </button>
     <div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linejoin="round" stroke-linecap="round"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5v-9Z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9M8 5.1l8.5 4.5"/></svg></div>
     <div class="brand-text"><strong>SORTOWANIE PACZEK</strong><small>Krapkowice · Otmęt</small></div>
     <button type="button" id="menuButton" class="menu-button" aria-controls="navMenu" aria-expanded="false" aria-label="Otwórz menu">
@@ -123,6 +153,10 @@
       <button type="button" class="nav-option active" data-view="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.8" cy="10.8" r="7"/><path d="m16 16 5 5"/></svg><span>Mam ulicę – gdzie ją dać?</span></button>
       <button type="button" class="nav-option" data-view="zones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="6.5" width="19" height="12" rx="2"/><path d="M12 6.5v12M2.5 12.5h19"/></svg><span>Strefy paczek – wykaz ulic</span></button>
       <button type="button" class="nav-option" data-view="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 17 1 3 3-1L19 8a2 2 0 0 0-3-3L5 16l-1 1Zm10-10 3 3"/></svg><span>Edycja bazy danych</span></button>
+      <div class="nav-version" aria-label="Informacja o aktualizacji, wersja 1.1">
+        <span class="version-icon" aria-hidden="true">ⓘ</span>
+        <span><strong>Aktualizacja 1.1</strong><small>Przycisk cofnij · widoczny wynik na telefonie</small></span>
+      </div>
     </nav>
   </header>
 
@@ -183,7 +217,7 @@
       </details>
     </div>
   </section>
-  <footer class="app-footer">Wyszukiwanie działa bez internetu · Dane zapisane lokalnie na urządzeniu<br>Otmęt · Wersja 1.0</footer>
+  <footer class="app-footer">Wyszukiwanie działa bez internetu · Dane zapisane lokalnie na urządzeniu<br>Otmęt · Wersja 1.1</footer>
 </div>
 <div id="navBackdrop" class="backdrop" hidden></div>
 <div id="toast" role="status" class="toast" hidden></div>
@@ -222,7 +256,7 @@ const DEFAULT_DATABASE = {"version":1,"zones":["LEWY TYŁ","PRAWY TYŁ","LEWY Ś
   let toastTimer;
   function toast(msg){const t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{t.hidden=true;},4000);}
   function setMenu(open){$('navMenu').hidden=!open;$('navBackdrop').hidden=!open;$('menuButton').setAttribute('aria-expanded',String(open));}
-  function view(name){app.view=name;setMenu(false);for(const n of ['search','zones','edit']){ $(n+'View').hidden=n!==name;}
+  function view(name){app.view=name;setMenu(false);document.body.classList.remove('search-typing');$('backHomeButton').hidden=name==='search';for(const n of ['search','zones','edit']){ $(n+'View').hidden=n!==name;}
     document.querySelectorAll('.nav-option').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
     if(name==='zones')renderZones();if(name==='edit')renderEditor();window.scrollTo({top:0,behavior:'instant'});
   }
@@ -419,10 +453,26 @@ const DEFAULT_DATABASE = {"version":1,"zones":["LEWY TYŁ","PRAWY TYŁ","LEWY Ś
   }
   function init(){load();
     for(const z of ZONES){const opt=dom('option','',z);opt.value=z;$('editZone').append(opt);}
+    $('backHomeButton').addEventListener('click',()=>view('search'));
     $('menuButton').addEventListener('click',()=>setMenu($('navMenu').hidden));
     $('navBackdrop').addEventListener('click',()=>setMenu(false));
     document.querySelectorAll('.nav-option').forEach(btn=>btn.addEventListener('click',()=>view(btn.dataset.view)));
     document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false);});
+    // Android/iOS: gdy klawiatura jest otwarta, wynik mieści się tuż pod polem.
+    $('searchInput').addEventListener('focus',()=>{
+      document.body.classList.add('search-typing');
+      if(window.matchMedia('(max-width:700px)').matches){
+        requestAnimationFrame(()=>window.scrollTo(0,0));
+      }
+    });
+    $('searchInput').addEventListener('blur',()=>{document.body.classList.remove('search-typing');});
+    if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>{
+      if(document.activeElement!==$('searchInput')||!window.matchMedia('(max-width:700px)').matches)return;
+      requestAnimationFrame(()=>{
+        const field=$('searchInput').getBoundingClientRect();
+        if(field.top>55)window.scrollTo({top:Math.max(0,window.scrollY+field.top-17),behavior:'instant'});
+      });
+    });}
     $('searchInput').addEventListener('input',()=>{app.acknowledged1Maja='';renderSearch();});
     $('clearSearch').addEventListener('click',()=>{$('searchInput').value='';app.acknowledged1Maja='';renderSearch();$('searchInput').focus();});
     $('changeTo3Maja').addEventListener('click',()=>{$('searchInput').value=$('searchInput').value.replace(/1\s+Maja/i,'3 Maja');app.acknowledged1Maja='';renderSearch();});
@@ -436,7 +486,7 @@ const DEFAULT_DATABASE = {"version":1,"zones":["LEWY TYŁ","PRAWY TYŁ","LEWY Ś
     $('resetButton').addEventListener('click',()=>{if(!window.confirm('Przywrócić początkową bazę? Wszystkie Twoje zmiany na tym urządzeniu zostaną usunięte.'))return;app.database=clone(DEFAULT_DATABASE.entries);save();cancelEdit();renderEditor();renderSearch();renderZones();toast('Przywrócono bazę początkową.');});
     if(!app.storageOK){$('editMessage').textContent='Uwaga: automatyczny zapis jest niedostępny. Po zmianach pobierz kopię JSON.';}
     renderSearch();renderZones();
-    if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    if('serviceWorker'in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(r=>r.update().catch(()=>{})).catch(()=>{});
   }
   init();
   // Exposed read-only test hooks; not used by the UI.
