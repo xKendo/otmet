@@ -1,0 +1,57 @@
+SORTOWANIE PACZEK – OTMĘT
+Wersja 1.0 / 3 listopada 2026
+===============================================
+
+CO JEST W PACZCE?
+- index.html – gotowa aplikacja, można otworzyć bez internetu
+- dane_poczatkowe.json – bazowe dane (94 wpisy)
+- manifest.webmanifest, sw.js i ikony – umożliwiają instalację jako aplikacja PWA po publikacji na HTTPS
+
+1. KOMPUTER Z WINDOWS – NAJPROŚCIEJ
+Rozpakuj ZIP do folderu. Otwórz dwukrotnie index.html w Chrome, Edge albo Firefox.
+Wyszukiwanie i przeglądanie stref działa bez internetu, nawet po odłączeniu sieci.
+Edycja zapisuje zmiany na Twoim urządzeniu, jeżeli przeglądarka pozwala na zapis lokalny dla plików.
+
+2. TELEFON ANDROID / IPHONE
+Aby mieć ikonę aplikacji na ekranie głównym i niezawodną pracę offline, najwygodniej
+umieścić wszystkie pliki na statycznej stronie HTTPS (np. GitHub Pages lub Netlify).
+Wtedy otwórz ten adres w Chrome (Android) / Safari (iPhone) i dodaj stronę do ekranu głównego.
+Otwórz ją przynajmniej raz z internetem, by zapisały się pliki potrzebne offline.
+Później wyszukiwanie działa bez internetu. Z dostępem do internetu także działa normalnie.
+
+Samo pobranie ZIP nie publikuje strony i nie tworzy gotowego instalatora APK/EXE.
+Na Androidzie i iPhonie plik index.html można też otworzyć w niektórych przeglądarkach
+lub podglądach plików, ale instalacja PWA i zapis danych w trybie pliku zależą od urządzenia.
+
+3. TRZY EKRANY
+Otwórz menu z trzema poziomymi kreskami w prawym górnym rogu:
+1) Mam ulicę – gdzie ją dać? – wpisz ulicę, numer lub firmę.
+2) Strefy paczek – wykaz ulic – kliknij strefę na schemacie busa.
+3) Edycja bazy danych – wpisz ulicę, wybierz jedną z sześciu stref, kliknij Zapisz.
+
+4. WYSZUKIWANIE
+Nie trzeba polskich znaków: np. 'zeromskiego', 'dabrowskiego', 'koziolka 19'.
+'Dąbrowskiego' i 'Marii Dąbrowskiej' są ODDZIELNYMI ulicami.
+'1 Maja' wymaga wyraźnego potwierdzenia, ponieważ prawdopodobnie chodzi o '3 Maja'.
+Ulica 3 Maja jest przypisana do PRAWEGO ŚRODKA.
+
+5. PRZENOSZENIE ZMIAN MIĘDZY URZĄDZENIAMI
+Baza jest przechowywana lokalnie, BEZ synchronizacji przez internet.
+Po zmianach wybierz: Menu > Edycja bazy danych > Kopia zapasowa > Pobierz kopię JSON.
+Na drugim urządzeniu wybierz Wczytaj kopię JSON. Import zastępuje aktualną bazę.
+Dla bezpieczeństwa regularnie pobieraj kopię przed wymianą telefonu lub czyszczeniem przeglądarki.
+
+6. GRANICE POTWIERDZEŃ
+- Miodowa 2 i Damrota 4 to indywidualnie przypisane adresy, NIE całe ulice.
+- Przy Ligonia 16 jest kilka osobnych wpisów różnych sklepów oraz paczkomat.
+- DHL BOX 24/7 był widoczny na screenie, ale bez pewnego numeru budynku,
+  więc NIE dodano go jako dokładnego adresu. Warto uzupełnić po sprawdzeniu.
+- Niektóre nazwy firm i adres Biedronki przy 3 Maja 36 wymagają sprawdzenia w terenie.
+- PRAWY TYŁ jest na GÓRZE schematu, przy kabinie; PRAWY PRZÓD jest na DOLE przy drzwiach.
+
+7. GDY ZMIANY SIĘ NIE ZAPISUJĄ
+Uruchom aplikację przez HTTPS jako PWA lub z lokalnego serwera, nie w prywatnym trybie.
+Zawsze możesz wykonać kopię JSON, żeby nie stracić edytowanych danych.
+
+Aplikacja nie wysyła ulic, adresów ani zmian na serwer. Wszystkie funkcje wyszukiwania
+wykonywane są w przeglądarce.

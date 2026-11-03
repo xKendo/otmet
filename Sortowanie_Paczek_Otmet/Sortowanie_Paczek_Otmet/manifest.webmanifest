@@ -1,0 +1,15 @@
+{
+  "name":"Sortowanie paczek – Otmęt",
+  "short_name":"Strefy paczek",
+  "description":"Wyszukaj ulicę, znajdź strefę busa i edytuj bazę. Działa bez internetu.",
+  "lang":"pl",
+  "start_url":"./index.html",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#f6f8f7",
+  "theme_color":"#167343",
+  "icons":[
+    {"src":"./ikona-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"./ikona-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}

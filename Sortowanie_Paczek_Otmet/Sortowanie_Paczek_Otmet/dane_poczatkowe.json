@@ -1,0 +1,935 @@
+{
+  "version": 1,
+  "zones": [
+    "LEWY TYŁ",
+    "PRAWY TYŁ",
+    "LEWY ŚRODEK",
+    "PRAWY ŚRODEK",
+    "LEWY PRZÓD",
+    "PRAWY PRZÓD"
+  ],
+  "entries": [
+    {
+      "id": "u001",
+      "kind": "street",
+      "street": "Stefana Żeromskiego",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD",
+      "aliases": [
+        "Żeromskiego"
+      ]
+    },
+    {
+      "id": "u002",
+      "kind": "street",
+      "street": "Strzelców Bytomskich",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD"
+    },
+    {
+      "id": "u003",
+      "kind": "street",
+      "street": "Bolesława Chrobrego",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD",
+      "aliases": [
+        "Chrobrego"
+      ]
+    },
+    {
+      "id": "u004",
+      "kind": "street",
+      "street": "Władysława Andersa",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD"
+    },
+    {
+      "id": "u005",
+      "kind": "street",
+      "street": "Józefa Elsnera",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD"
+    },
+    {
+      "id": "u006",
+      "kind": "street",
+      "street": "Arki Bożka",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD"
+    },
+    {
+      "id": "u007",
+      "kind": "street",
+      "street": "Gustawa Morcinka",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD"
+    },
+    {
+      "id": "u008",
+      "kind": "street",
+      "street": "Reja",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD"
+    },
+    {
+      "id": "u009",
+      "kind": "street",
+      "street": "Bolesława Prusa",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD"
+    },
+    {
+      "id": "u010",
+      "kind": "street",
+      "street": "Władysława Reymonta",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD",
+      "aliases": [
+        "Reymonta"
+      ]
+    },
+    {
+      "id": "u011",
+      "kind": "street",
+      "street": "Walerego Wróblewskiego",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD"
+    },
+    {
+      "id": "u012",
+      "kind": "street",
+      "street": "Jana Kochanowskiego",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD"
+    },
+    {
+      "id": "u013",
+      "kind": "street",
+      "street": "Elizy Orzeszkowej",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD"
+    },
+    {
+      "id": "u014",
+      "kind": "street",
+      "street": "Marii Dąbrowskiej",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD",
+      "aliases": [
+        "M. Dąbrowskiej"
+      ]
+    },
+    {
+      "id": "u015",
+      "kind": "street",
+      "street": "Jana Brzechwy",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD"
+    },
+    {
+      "id": "u016",
+      "kind": "street",
+      "street": "Wojciecha Korfantego",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD"
+    },
+    {
+      "id": "u017",
+      "kind": "street",
+      "street": "Emilii Plater",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD"
+    },
+    {
+      "id": "u018",
+      "kind": "street",
+      "street": "Wiejska",
+      "number": "",
+      "label": "",
+      "zone": "LEWY PRZÓD"
+    },
+    {
+      "id": "u019",
+      "kind": "street",
+      "street": "Polna",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u020",
+      "kind": "street",
+      "street": "Dębowa",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u021",
+      "kind": "street",
+      "street": "Górna",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u022",
+      "kind": "street",
+      "street": "Cegielniana",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u023",
+      "kind": "street",
+      "street": "Grunwaldzka",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u024",
+      "kind": "street",
+      "street": "Bohaterów Westerplatte",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u025",
+      "kind": "street",
+      "street": "Świętego Józefa",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD",
+      "aliases": [
+        "Św. Józefa",
+        "19 Marca"
+      ]
+    },
+    {
+      "id": "u026",
+      "kind": "street",
+      "street": "Zwycięstwa",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u027",
+      "kind": "street",
+      "street": "Armii Krajowej",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD",
+      "aliases": [
+        "Armii Ludowej"
+      ]
+    },
+    {
+      "id": "u028",
+      "kind": "street",
+      "street": "Janusza Korczaka",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u029",
+      "kind": "street",
+      "street": "Tuwima",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u030",
+      "kind": "street",
+      "street": "Cypriana Kamila Norwida",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD",
+      "aliases": [
+        "Norwida"
+      ]
+    },
+    {
+      "id": "u031",
+      "kind": "street",
+      "street": "Jana Kasprowicza",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD",
+      "aliases": [
+        "Kasprowicza"
+      ]
+    },
+    {
+      "id": "u032",
+      "kind": "street",
+      "street": "Wyspiańskiego",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u033",
+      "kind": "street",
+      "street": "Bema",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u034",
+      "kind": "street",
+      "street": "Broniewskiego",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u035",
+      "kind": "street",
+      "street": "Dąbrowskiego",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u036",
+      "kind": "street",
+      "street": "Harcerska",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u037",
+      "kind": "street",
+      "street": "I Dywizji",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u038",
+      "kind": "street",
+      "street": "Sąsiedzka",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u039",
+      "kind": "street",
+      "street": "Traugutta",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY PRZÓD"
+    },
+    {
+      "id": "u040",
+      "kind": "street",
+      "street": "Koziołka",
+      "number": "",
+      "label": "",
+      "zone": "LEWY ŚRODEK",
+      "aliases": [
+        "Ks. Koziołka",
+        "Księdza Koziołka",
+        "ks Koziołka"
+      ]
+    },
+    {
+      "id": "u041",
+      "kind": "point",
+      "street": "Koziołka",
+      "number": "2",
+      "label": "Makrus",
+      "zone": "LEWY ŚRODEK",
+      "aliases": [
+        "Księdza Koziołka",
+        "Ks. Koziołka"
+      ]
+    },
+    {
+      "id": "u042",
+      "kind": "point",
+      "street": "Koziołka",
+      "number": "2",
+      "label": "Han Mar",
+      "zone": "LEWY ŚRODEK",
+      "aliases": [
+        "Księdza Koziołka",
+        "Ks. Koziołka"
+      ]
+    },
+    {
+      "id": "u043",
+      "kind": "point",
+      "street": "Koziołka",
+      "number": "2",
+      "label": "Profi Garage",
+      "zone": "LEWY ŚRODEK",
+      "aliases": [
+        "Księdza Koziołka",
+        "Ks. Koziołka"
+      ]
+    },
+    {
+      "id": "u044",
+      "kind": "point",
+      "street": "Koziołka",
+      "number": "2",
+      "label": "Stacja paliw Pieprzyk",
+      "zone": "LEWY ŚRODEK",
+      "aliases": [
+        "Księdza Koziołka",
+        "Ks. Koziołka"
+      ]
+    },
+    {
+      "id": "u045",
+      "kind": "point",
+      "street": "Koziołka",
+      "number": "4",
+      "label": "ADEX",
+      "zone": "LEWY ŚRODEK",
+      "aliases": [
+        "Księdza Koziołka",
+        "Ks. Koziołka"
+      ]
+    },
+    {
+      "id": "u046",
+      "kind": "point",
+      "street": "Koziołka",
+      "number": "4",
+      "label": "Naprzód",
+      "zone": "LEWY ŚRODEK",
+      "aliases": [
+        "Księdza Koziołka",
+        "Ks. Koziołka"
+      ]
+    },
+    {
+      "id": "u047",
+      "kind": "point",
+      "street": "Koziołka",
+      "number": "10A",
+      "label": "Shell",
+      "zone": "LEWY ŚRODEK",
+      "aliases": [
+        "Księdza Koziołka",
+        "Ks. Koziołka"
+      ]
+    },
+    {
+      "id": "u048",
+      "kind": "point",
+      "street": "Koziołka",
+      "number": "10A",
+      "label": "DPD Pickup",
+      "zone": "LEWY ŚRODEK",
+      "aliases": [
+        "Księdza Koziołka",
+        "Ks. Koziołka"
+      ]
+    },
+    {
+      "id": "u049",
+      "kind": "point",
+      "street": "Koziołka",
+      "number": "12",
+      "label": "Żabka",
+      "zone": "LEWY ŚRODEK",
+      "aliases": [
+        "Księdza Koziołka",
+        "Ks. Koziołka"
+      ]
+    },
+    {
+      "id": "u050",
+      "kind": "point",
+      "street": "Koziołka",
+      "number": "12",
+      "label": "DPD Pickup",
+      "zone": "LEWY ŚRODEK",
+      "aliases": [
+        "Księdza Koziołka",
+        "Ks. Koziołka"
+      ]
+    },
+    {
+      "id": "u051",
+      "kind": "point",
+      "street": "Koziołka",
+      "number": "19",
+      "label": "BHP Sprinters",
+      "zone": "LEWY ŚRODEK",
+      "aliases": [
+        "Księdza Koziołka",
+        "Ks. Koziołka"
+      ]
+    },
+    {
+      "id": "u052",
+      "kind": "point",
+      "street": "Koziołka",
+      "number": "46",
+      "label": "Kaufland",
+      "zone": "LEWY ŚRODEK",
+      "aliases": [
+        "Księdza Koziołka",
+        "Ks. Koziołka"
+      ]
+    },
+    {
+      "id": "u053",
+      "kind": "street",
+      "street": "Leśna",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY ŚRODEK"
+    },
+    {
+      "id": "u054",
+      "kind": "street",
+      "street": "Mikołaja Kopernika",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY ŚRODEK",
+      "aliases": [
+        "Kopernika"
+      ]
+    },
+    {
+      "id": "u055",
+      "kind": "street",
+      "street": "Adama Mickiewicza",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY ŚRODEK",
+      "aliases": [
+        "Mickiewicza"
+      ]
+    },
+    {
+      "id": "u056",
+      "kind": "street",
+      "street": "Działkowa",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY ŚRODEK"
+    },
+    {
+      "id": "u057",
+      "kind": "street",
+      "street": "Juliusza Ligonia",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY ŚRODEK",
+      "aliases": [
+        "Ligonia"
+      ]
+    },
+    {
+      "id": "u058",
+      "kind": "street",
+      "street": "Jakuba Kani",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY ŚRODEK",
+      "aliases": [
+        "Kani"
+      ]
+    },
+    {
+      "id": "u059",
+      "kind": "street",
+      "street": "3 Maja",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY ŚRODEK"
+    },
+    {
+      "id": "u060",
+      "kind": "street",
+      "street": "Krótka",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY ŚRODEK"
+    },
+    {
+      "id": "u061",
+      "kind": "street",
+      "street": "Piastowska",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY ŚRODEK"
+    },
+    {
+      "id": "u062",
+      "kind": "street",
+      "street": "Dambonia",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY ŚRODEK"
+    },
+    {
+      "id": "u063",
+      "kind": "street",
+      "street": "Ogrodowa",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY ŚRODEK"
+    },
+    {
+      "id": "u064",
+      "kind": "point",
+      "street": "Juliusza Ligonia",
+      "number": "16",
+      "label": "Media Expert",
+      "zone": "PRAWY ŚRODEK",
+      "aliases": [
+        "Ligonia"
+      ]
+    },
+    {
+      "id": "u065",
+      "kind": "point",
+      "street": "Juliusza Ligonia",
+      "number": "16",
+      "label": "SMYK",
+      "zone": "PRAWY ŚRODEK",
+      "aliases": [
+        "Ligonia"
+      ]
+    },
+    {
+      "id": "u066",
+      "kind": "point",
+      "street": "Juliusza Ligonia",
+      "number": "16",
+      "label": "Pepco",
+      "zone": "PRAWY ŚRODEK",
+      "aliases": [
+        "Ligonia"
+      ]
+    },
+    {
+      "id": "u067",
+      "kind": "point",
+      "street": "Juliusza Ligonia",
+      "number": "16",
+      "label": "Dealz",
+      "zone": "PRAWY ŚRODEK",
+      "aliases": [
+        "Ligonia"
+      ]
+    },
+    {
+      "id": "u068",
+      "kind": "point",
+      "street": "Juliusza Ligonia",
+      "number": "16",
+      "label": "paczkomat DPD",
+      "zone": "PRAWY ŚRODEK",
+      "aliases": [
+        "Ligonia"
+      ]
+    },
+    {
+      "id": "u069",
+      "kind": "point",
+      "street": "Juliusza Ligonia",
+      "number": "14",
+      "label": "Action",
+      "zone": "PRAWY ŚRODEK",
+      "aliases": [
+        "Ligonia"
+      ]
+    },
+    {
+      "id": "u070",
+      "kind": "point",
+      "street": "Juliusza Ligonia",
+      "number": "14",
+      "label": "KiK",
+      "zone": "PRAWY ŚRODEK",
+      "aliases": [
+        "Ligonia"
+      ]
+    },
+    {
+      "id": "u071",
+      "kind": "point",
+      "street": "Juliusza Ligonia",
+      "number": "14",
+      "label": "Martes Sport",
+      "zone": "PRAWY ŚRODEK",
+      "aliases": [
+        "Ligonia"
+      ]
+    },
+    {
+      "id": "u072",
+      "kind": "point",
+      "street": "Juliusza Ligonia",
+      "number": "14",
+      "label": "paczkomat InPost",
+      "zone": "PRAWY ŚRODEK",
+      "aliases": [
+        "Ligonia"
+      ]
+    },
+    {
+      "id": "u073",
+      "kind": "point",
+      "street": "Juliusza Ligonia",
+      "number": "14",
+      "label": "automat ORLEN Paczka",
+      "zone": "PRAWY ŚRODEK",
+      "aliases": [
+        "Ligonia"
+      ]
+    },
+    {
+      "id": "u074",
+      "kind": "point",
+      "street": "Piastowska",
+      "number": "1",
+      "label": "paczkomat",
+      "zone": "PRAWY ŚRODEK"
+    },
+    {
+      "id": "u075",
+      "kind": "point",
+      "street": "3 Maja",
+      "number": "36",
+      "label": "paczkomat",
+      "zone": "PRAWY ŚRODEK",
+      "note": "Według użytkownika obok Orlenu"
+    },
+    {
+      "id": "u076",
+      "kind": "point",
+      "street": "3 Maja",
+      "number": "36",
+      "label": "Biedronka",
+      "zone": "PRAWY ŚRODEK",
+      "note": "Wpis do weryfikacji"
+    },
+    {
+      "id": "u077",
+      "kind": "street",
+      "street": "Miarki",
+      "number": "",
+      "label": "",
+      "zone": "LEWY TYŁ"
+    },
+    {
+      "id": "u078",
+      "kind": "street",
+      "street": "Jagiellońska",
+      "number": "",
+      "label": "",
+      "zone": "LEWY TYŁ"
+    },
+    {
+      "id": "u079",
+      "kind": "street",
+      "street": "Osiedle Sady",
+      "number": "",
+      "label": "",
+      "zone": "LEWY TYŁ",
+      "aliases": [
+        "Sady"
+      ]
+    },
+    {
+      "id": "u080",
+      "kind": "street",
+      "street": "Osiedle XXX-lecia",
+      "number": "",
+      "label": "",
+      "zone": "LEWY TYŁ",
+      "aliases": [
+        "Osiedle 30-lecia",
+        "os XXX-lecia",
+        "XXX-lecia"
+      ]
+    },
+    {
+      "id": "u081",
+      "kind": "street",
+      "street": "Osiedle Maksymiliana Marii Kolbe",
+      "number": "",
+      "label": "",
+      "zone": "LEWY TYŁ",
+      "aliases": [
+        "o. Maksymiliana Marii Kolbe",
+        "Maksymiliana Marii Kolbe",
+        "Kolbe"
+      ]
+    },
+    {
+      "id": "u082",
+      "kind": "street",
+      "street": "Odrowążów",
+      "number": "",
+      "label": "",
+      "zone": "LEWY TYŁ"
+    },
+    {
+      "id": "u083",
+      "kind": "street",
+      "street": "Aleja Jana Pawła II",
+      "number": "",
+      "label": "",
+      "zone": "LEWY TYŁ",
+      "aliases": [
+        "Jana Pawła II",
+        "Al. Jana Pawła II"
+      ]
+    },
+    {
+      "id": "u084",
+      "kind": "address",
+      "street": "Miodowa",
+      "number": "2",
+      "label": "",
+      "zone": "LEWY TYŁ",
+      "note": "Dotyczy wyłącznie numeru 2, nie całej ulicy Miodowej"
+    },
+    {
+      "id": "u085",
+      "kind": "street",
+      "street": "Jana Kilińskiego",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY TYŁ",
+      "aliases": [
+        "Kilińskiego"
+      ]
+    },
+    {
+      "id": "u086",
+      "kind": "street",
+      "street": "Obuwników",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY TYŁ"
+    },
+    {
+      "id": "u087",
+      "kind": "street",
+      "street": "Ludwika Waryńskiego",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY TYŁ"
+    },
+    {
+      "id": "u088",
+      "kind": "street",
+      "street": "Tomasza Baty",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY TYŁ",
+      "aliases": [
+        "Baty",
+        "Buczka"
+      ]
+    },
+    {
+      "id": "u089",
+      "kind": "street",
+      "street": "Fryderyka Chopina",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY TYŁ",
+      "aliases": [
+        "Chopina"
+      ]
+    },
+    {
+      "id": "u090",
+      "kind": "street",
+      "street": "Ignacego Krasickiego",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY TYŁ"
+    },
+    {
+      "id": "u091",
+      "kind": "street",
+      "street": "Księdza Duszy",
+      "number": "",
+      "label": "",
+      "zone": "PRAWY TYŁ",
+      "aliases": [
+        "Ks. Duszy",
+        "Duszy"
+      ]
+    },
+    {
+      "id": "u092",
+      "kind": "point",
+      "street": "Jana Kilińskiego",
+      "number": "11",
+      "label": "Żabka",
+      "zone": "PRAWY TYŁ",
+      "aliases": [
+        "Kilińskiego"
+      ]
+    },
+    {
+      "id": "u093",
+      "kind": "point",
+      "street": "Księdza Duszy",
+      "number": "29",
+      "label": "Cukiernia Magosz",
+      "zone": "PRAWY TYŁ",
+      "aliases": [
+        "Duszy"
+      ]
+    },
+    {
+      "id": "u094",
+      "kind": "point",
+      "street": "Damrota",
+      "number": "4",
+      "label": "paczkomat",
+      "zone": "PRAWY TYŁ",
+      "note": "Tylko adres Damrota 4 potwierdzony przez użytkownika"
+    }
+  ],
+  "notes": {
+    "unassigned": [
+      "DHL BOX 24/7: automat widoczny na screenie, dokładny adres niepotwierdzony"
+    ],
+    "warnings": [
+      "1 Maja: dla Otmętu wymaga jednoznacznego potwierdzenia, prawdopodobnie chodzi o 3 Maja",
+      "Szczegóły części firm i sklepów warto potwierdzić podczas pracy w terenie"
+    ]
+  }
+}
